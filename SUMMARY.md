@@ -4,7 +4,8 @@
 
 ## Network
 
-* [WebSocket](network/websocket.md)
+* [Protocol](network/protocol/README.md)
+  * [WebSocket](network/protocol/websocket.md)
 
 ## DATABASE
 
