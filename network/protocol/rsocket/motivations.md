@@ -6,7 +6,7 @@
 * 이는 사용자가 체감하는 지연시간과 시스템 구축 및 실행에 필요한 리소스의 크기에 상당한 영향을 미침
 * [Reactive Manifesto](http://www.reactivemanifesto.org)에 기술되어 있으며, [Reactive Streams](http://www.reactive-streams.org)와 [Reactive Extensions](http://www.reactivex.io)에 구현되어 있는 아키텍처 패턴(Architectural pattern)은 비동시 메시징 방식을 선호하고 요청/응답 스타일의 통신 방식을 뛰어넘음(?)
 * _RSocket_ 프로토콜은 reactive 원칙을 수용하는 형식적인(formal) 통신 프로토콜임
-* 아래의 내용들은 새로운 프로토콜을 정의하게된 동기들을 나열합니다.
+* 아래의 내용들은 새로운 프로토콜을 정의하게된 동기들을 나열함
 
 ## 1. Message Driven
 
