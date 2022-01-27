@@ -6,6 +6,7 @@
 
 * [Protocol](network/protocol/README.md)
   * [WebSocket](network/protocol/websocket.md)
+  * [RSocket](network/protocol/rsocket.md)
 
 ## DATABASE
 
