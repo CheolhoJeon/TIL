@@ -28,7 +28,5 @@
 
 ## 참고자료
 
-{% embed url="https://datatracker.ietf.org/doc/html/rfc6455#page-4" %}
-
-{% embed url="https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#websocket" %}
-
+* [RFC- 6455 - The WebScoket Protocol](https://datatracker.ietf.org/doc/html/rfc6455#page-4)
+* [Web on Servlet Stack](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#websocket)
