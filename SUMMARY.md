@@ -17,6 +17,7 @@
   * [문자열 다루기](database/sql/undefined-1.md)
   * [2개의 값 비율 계산하기](database/sql/2.md)
   * [그룹핑](database/sql/undefined-2.md)
+  * [가로 <-> 세로](database/sql/less-than-greater-than.md)
 
 ## Language
 
