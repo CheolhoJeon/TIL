@@ -24,3 +24,7 @@
 
 * [Kotlin](language/kotlin/README.md)
   * [Basics](language/kotlin/basics.md)
+
+***
+
+* [계산된 테이블에 이름 붙여 재사용하기](undefined.md)
