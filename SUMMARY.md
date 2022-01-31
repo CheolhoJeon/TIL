@@ -19,12 +19,9 @@
   * [그룹핑](database/sql/undefined-2.md)
   * [가로 <-> 세로](database/sql/less-than-greater-than.md)
   * [테이블 결합하기](database/sql/undefined-3.md)
+  * [계산된 테이블에 이름 붙여 사용하기](database/sql/undefined-4.md)
 
 ## Language
 
 * [Kotlin](language/kotlin/README.md)
   * [Basics](language/kotlin/basics.md)
-
-***
-
-* [계산된 테이블에 이름 붙여 재사용하기](undefined.md)
