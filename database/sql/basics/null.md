@@ -12,6 +12,10 @@ description: COALESCE 함수
 | 10002        | 4650   | 500    |
 | 10003        | 3870   | null   |
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 SELECT purchase_id,
        amount,
@@ -21,6 +25,8 @@ SELECT purchase_id,
 FROM purchase_log_with_coupon
 ;
 ```
+
+</details>
 
 | purchase\_id | amount | coupon | discount\_amount1 | discount\_amount2 |
 | ------------ | ------ | ------ | ----------------- | ----------------- |

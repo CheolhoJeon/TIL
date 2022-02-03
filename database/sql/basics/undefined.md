@@ -6,6 +6,10 @@ description: 날짜/시간 함수, date 자료형, timestamp 자료형, 문자�
 
 ## 1. 현재 날짜와 타임스탬프 추출하기
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 SELECT CURRENT_DATE      AS dt,
        CURRENT_TIMESTAMP AS stamp,
@@ -13,6 +17,8 @@ SELECT CURRENT_DATE      AS dt,
        LOCALTIMESTAMP    AS localstamp
 ;
 ```
+
+</details>
 
 | dt         | stamp                             | localstamp                 |
 | ---------- | --------------------------------- | -------------------------- |
@@ -22,6 +28,10 @@ SELECT CURRENT_DATE      AS dt,
 
 문자열을 날짜 자료형 혹은 타임스탬프 자료형으로 변경하는 방법
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 SELECT CAST('2016-01-30' AS date)               AS dt,
        CAST('2016-01-30 12:00:00' AS timestamp) AS stamp
@@ -30,6 +40,8 @@ SELECT CAST('2016-01-30' AS date)               AS dt,
 --     '2016-01-30 12:00:00'::timestamp         AS stamp
 ;
 ```
+
+</details>
 
 | dt         | stamp                      |
 | ---------- | -------------------------- |
@@ -45,6 +57,10 @@ PostgreSQL이 제공하는 형변환 방법
 
 ### 3-1. 타임스탬프 자료형의 데이터에서 연, 월, 일 등을 추출하는 쿼리
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 SELECT stamp,
        EXTRACT(YEAR FROM stamp)  AS year,
@@ -54,11 +70,17 @@ SELECT stamp,
 FROM (SELECT CAST('2016-01-30 12:00:00' AS timestamp) AS stamp) as t;
 ```
 
+</details>
+
 | stamp                      | year | month | day | hour |
 | -------------------------- | ---- | ----- | --- | ---- |
 | 2016-01-30 12:00:00.000000 | 2016 | 1     | 30  | 12   |
 
 ### 3-2. 타임스탬프를 나타내는 문자열에서 연, 월, 일 등을 추출하는 쿼리
+
+<details>
+
+<summary>SQL</summary>
 
 ```sql
 SELECT stamp,
@@ -71,11 +93,11 @@ SELECT stamp,
 FROM (SELECT CAST('2016-01-30 12:00:00' AS text) as stamp) AS t;
 ```
 
+</details>
+
 | stamp               | year | month | day | hour | year\_moth |
 | ------------------- | ---- | ----- | --- | ---- | ---------- |
 | 2016-01-30 12:00:00 | 2016 | 01    | 30  | 12   | 2016-01    |
-
-
 
 ## 4. 날짜/시간 계산하기
 
@@ -89,6 +111,10 @@ FROM (SELECT CAST('2016-01-30 12:00:00' AS text) as stamp) AS t;
 
 ### 4-1. 미래 또는 과거의 날짜시간 계산하기
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 SELECT user_id,
        register_stamp::timestamp                          AS register_stamp,
@@ -100,6 +126,8 @@ SELECT user_id,
 FROM mst_users_with_dates;
 ```
 
+</details>
+
 | user\_id | register\_stamp            | after\_1\_hour             | before\_30\_minutes        | register\_date | after\_1\_day              | before\_1\_month           |
 | -------- | -------------------------- | -------------------------- | -------------------------- | -------------- | -------------------------- | -------------------------- |
 | U001     | 2016-02-28 10:00:00.000000 | 2016-02-28 11:00:00.000000 | 2016-02-28 09:30:00.000000 | 2016-02-28     | 2016-02-29 00:00:00.000000 | 2016-01-28 00:00:00.000000 |
@@ -107,6 +135,10 @@ FROM mst_users_with_dates;
 | U003     | 2016-03-01 10:00:00.000000 | 2016-03-01 11:00:00.000000 | 2016-03-01 09:30:00.000000 | 2016-03-01     | 2016-03-02 00:00:00.000000 | 2016-02-01 00:00:00.000000 |
 
 ### 4-2. 날짜 데이터들의 차이 계산하기
+
+<details>
+
+<summary>SQL</summary>
 
 ```sql
 SELECT user_id,
@@ -116,6 +148,8 @@ SELECT user_id,
 FROM mst_users_with_dates;
 ```
 
+</details>
+
 | user\_id | today      | register\_date | diff\_days |
 | -------- | ---------- | -------------- | ---------- |
 | U001     | 2022-01-25 | 2016-02-28     | 2158       |
@@ -123,6 +157,10 @@ FROM mst_users_with_dates;
 | U003     | 2022-01-25 | 2016-03-01     | 2156       |
 
 ### 4-3. 사용자의 생년월일로 나이 계산하기
+
+<details>
+
+<summary>SQL</summary>
 
 ```sql
 SELECT user_id,
@@ -134,9 +172,10 @@ SELECT user_id,
 FROM mst_users_with_dates;
 ```
 
+</details>
+
 | user\_id | today      | register\_date | birth\_date | current\_age | register\_age |
 | -------- | ---------- | -------------- | ----------- | ------------ | ------------- |
 | U001     | 2022-01-25 | 2016-02-28     | 2000-02-29  | 21           | 15            |
 | U002     | 2022-01-25 | 2016-02-29     | 2000-02-29  | 21           | 16            |
 | U003     | 2022-01-25 | 2016-03-01     | 2000-02-29  | 21           | 16            |
-

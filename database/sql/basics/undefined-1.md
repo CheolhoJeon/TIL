@@ -14,12 +14,18 @@ description: CONCAT 함수, || 연산자
 | U002     | 경기도수원시     | 장안구        |
 | U003     | 제주도특별자치도   | 서귀포시       |
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 SELECT user_id,
        concat(pref_name, city_name) AS pref_city1,
        pref_name || city_name       AS pref_city2
 FROM mst_user_location;
 ```
+
+</details>
 
 | user\_id | pref\_city1  | pref\_city2  |
 | -------- | ------------ | ------------ |

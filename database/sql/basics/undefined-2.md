@@ -35,6 +35,10 @@ description: >-
 * `MAX`, `MIN` 함수는 각각 최댓값과 최솟값을 구하는 함수
   * 따라서 대소 비교가 가능한 자료형(숫자, 문자열, 타임스탬프 등)에 적용할 수 있음
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 SELECT COUNT(*)                   AS total_count,
        COUNT(DISTINCT user_id)    AS user_count,
@@ -46,18 +50,24 @@ SELECT COUNT(*)                   AS total_count,
 FROM review;
 ```
 
+</details>
+
 | total\_count | user\_count | product\_count | sum | avg               | max | min |
 | ------------ | ----------- | -------------- | --- | ----------------- | --- | --- |
 | 9            | 3           | 3              | 37  | 4.111111111111111 | 5   | 3   |
 
 ### 1-2. 그룹핑한 데이터의 특징량 계산하기
 
-* 데이터를 조금 더 작게 분할하고 싶다면 `GROUP BY 구문`을 사용해 데이터를 분류할 키를 지정하고, 그러한 키를 기반으로 데이터를 집약할 수 있음
-* 이때 GROUP BY 구문을 사용한 쿼리에서는, GROUP BY 구문에 지정한 컬럼 또는 집약 함수만 SELECT 구문의 컬럼으로 지정할 수 있음
+* 데이터를 조금 더 작게 분할하고 싶다면 `GROUP BY` 구문을 사용해 데이터를 분류할 키를 지정하고, 그러한 키를 기반으로 데이터를 집약할 수 있음
+* 이때 `GROUP BY` 구문을 사용한 쿼리에서는, `GROUP BY` 구문에 지정한 컬럼 또는 집약 함수만 `SELECT` 구문의 컬럼으로 지정할 수 있음
 
 {% hint style="info" %}
 GROUP BY 구문을 사용한 쿼리에서는 GROUP BY 구문에 지정한 컬럼을 유니크 키로 새로운 테이블을 만들게 됨. 이 과정에서 GROUP BY 구문에 지정하지 않은 컬럼은 사라져버림. 따라서 집약 함수를 적용한 값과 집약 전의 값은 동시에 사용할 수 없는 것임
 {% endhint %}
+
+<details>
+
+<summary>SQL</summary>
 
 ```sql
 SELECT user_id,
@@ -71,11 +81,13 @@ FROM review
 GROUP BY user_id;
 ```
 
-| user\_id | total\_count | product\_count | sum | avg                | max | min |
-| -------- | ------------ | -------------- | --- | ------------------ | --- | --- |
-| U001     | 3            | 3              | 14  | 4.666666666666667  | 5   | 4   |
-| U002     | 3            | 3              | 10  | 3.3333333333333335 | 4   | 3   |
-| U003     | 3            | 3              | 13  | 4.333333333333333  | 5   | 4   |
+</details>
+
+| user\_id | total\_count | product\_count | sum | avg  | max | min |
+| -------- | ------------ | -------------- | --- | ---- | --- | --- |
+| U001     | 3            | 3              | 14  | 4.66 | 5   | 4   |
+| U002     | 3            | 3              | 10  | 3.33 | 4   | 3   |
+| U003     | 3            | 3              | 13  | 4.33 | 5   | 4   |
 
 ### 1-3. 집약 함수를 적용한 값과 집약 전의 값을 동시에 다루기
 
@@ -83,6 +95,10 @@ GROUP BY user_id;
 * 집약 함수로 윈도 함수를 사용하려면, 집약 함수 뒤에 `OVER 구문`을 붙이고 여기에 윈도 함수를 지정함
 * `OVER 구문`에 매개 변수를 지정하지 않으면 테이블 전체에 집약 함수를 적용한 값이 리턴됨
 * 매개 변수에 `PARTITION BY <컬럼이름>`을 지정하면 해당 컬럼 값을 기반으로 그룹화하고 집약 함수를 적용함
+
+<details>
+
+<summary>SQL</summary>
 
 ```sql
 SELECT user_id,
@@ -97,6 +113,8 @@ SELECT user_id,
        score - AVG(score) OVER (PARTITION BY user_id) AS user_avg_score_diff
 FROM review;
 ```
+
+</details>
 
 | user\_id | product\_id | score | avg\_score | user\_avg\_score | user\_avg\_score\_diff |
 | -------- | ----------- | ----- | ---------- | ---------------- | ---------------------- |
@@ -160,6 +178,10 @@ FROM review;
 {% endtab %}
 {% endtabs %}
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 SELECT product_id,
        score,
@@ -180,6 +202,8 @@ SELECT product_id,
 FROM popular_products
 ORDER BY row;
 ```
+
+</details>
 
 | product\_id | score | row | rank | dense\_rank | lag1 | lag2 | lead1 | lead2 |
 | ----------- | ----- | --- | ---- | ----------- | ---- | ---- | ----- | ----- |
@@ -217,6 +241,10 @@ ORDER BY row;
 {% endtab %}
 {% endtabs %}
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 SELECT product_id,
        score,
@@ -241,6 +269,8 @@ FROM popular_products
 ORDER BY row;
 ```
 
+</details>
+
 | product\_id | score | row | cum\_score | local\_avg        | first\_value | last\_value |
 | ----------- | ----- | --- | ---------- | ----------------- | ------------ | ----------- |
 | A001        | 94    | 1   | 94         | 92                | A001         | D004        |
@@ -255,6 +285,10 @@ ORDER BY row;
 {% hint style="info" %}
 윈도 함수의 프레임 지정 범위를 이해하기에 아래의 예제는 매우 용이함
 {% endhint %}
+
+<details>
+
+<summary>SQL</summary>
 
 ```sql
 SELECT product_id,
@@ -277,6 +311,8 @@ WHERE category = 'action'
 ORDER BY row;
 ```
 
+</details>
+
 | product\_id | row | whole\_agg            | cum\_agg              | local\_agg       |
 | ----------- | --- | --------------------- | --------------------- | ---------------- |
 | A001        | 1   | {A001,A002,A003,A004} | {A001}                | {A001,A002}      |
@@ -286,7 +322,11 @@ ORDER BY row;
 
 ### 2-3. PARTITION BY와 ORDER BY 조합하기
 
-* 윈도 함수의 `PARTITION BY` 구문과 `ORDER BY` 구문을 조합해서 사용할 수도 있음
+윈도 함수의 `PARTITION BY` 구문과 `ORDER BY` 구문을 조합해서 사용할 수도 있음
+
+<details>
+
+<summary>SQL</summary>
 
 ```sql
 SELECT category,
@@ -306,6 +346,8 @@ FROM popular_products
 ORDER BY category, row DESC;
 ```
 
+</details>
+
 | category | product\_id | score | row | rank | dense\_rank |
 | -------- | ----------- | ----- | --- | ---- | ----------- |
 | action   | A004        | 64    | 4   | 4    | 4           |
@@ -318,6 +360,10 @@ ORDER BY category, row DESC;
 | drama    | D001        | 90    | 1   | 1    | 1           |
 
 #### 각 카테고리의 상위 n개 추출하기
+
+<details>
+
+<summary>SQL</summary>
 
 ```sql
 SELECT *
@@ -333,6 +379,8 @@ WHERE rank <= 2
 ORDER BY category, rank;
 ```
 
+</details>
+
 | category | product\_id | score | rank |
 | -------- | ----------- | ----- | ---- |
 | action   | A001        | 94    | 1    |
@@ -342,6 +390,10 @@ ORDER BY category, rank;
 
 #### 각 카테고리의 최상위 추출하기
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 -- DISTINCT 구문을 사용해 중복 제거하기
 SELECT DISTINCT category,
@@ -350,6 +402,8 @@ SELECT DISTINCT category,
                 OVER (PARTITION BY category ORDER BY score DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
 FROM popular_products;
 ```
+
+</details>
 
 | category | first\_value |
 | -------- | ------------ |
