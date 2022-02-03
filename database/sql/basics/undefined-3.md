@@ -23,10 +23,6 @@ description: UNION ALL 구문, LEFT JOIN, 상관 서브 쿼리
 * 비슷한 구조를 가지는 테이블의 데이터를 일괄 처리하고 싶은 경우, 아래 처럼 `UNION ALL` 구문을 사용해 여러 개의 테이블을 세로로 결합하면 됨
 * `UNION ALL`로 결합할 때는 테이블의 컬럼이 완전히 일치해야 하므로, 한쪽 테이블에만 존재하는 컬럼은 _phone_ 컬럼 처럼 SELECT 구문으로 제외하거나 _email_ 컬럼 처럼 디폴트 값을 할당해야함
 
-<details>
-
-<summary>SQL</summary>
-
 ```sql
 SELECT 'app1' AS app_name, user_id, name, email
 FROM app1_mst_users
@@ -34,8 +30,6 @@ UNION ALL
 SELECT 'app2' AS app_name, user_id, name, NULL
 FROM app2_mst_users;
 ```
-
-</details>
 
 | app\_name | user\_id | name   | email                                           |
 | --------- | -------- | ------ | ----------------------------------------------- |
@@ -86,10 +80,6 @@ FROM app2_mst_users;
   * book 카테고리가 손실됨
   * 여러 개의 상품 ID가 부여된 DVD/CD 카테고리는 가격이 중복되어 출력되고 있음
 
-<details>
-
-<summary>SQL</summary>
-
 ```sql
 SELECT m.category_id,
        m.name,
@@ -102,8 +92,6 @@ FROM mst_categories AS m
          JOIN product_sale_ranking AS r ON m.category_id = r.category_id
 ;
 ```
-
-</details>
 
 | category\_id | name | sales  | sale\_product |
 | ------------ | ---- | ------ | ------------- |
@@ -122,10 +110,6 @@ FROM mst_categories AS m
 
 마스터 테이블의 행 수를 변경하지 않고 데이터를 가로로 정렬하려면, `LEFT JOIN`을 사용해 결합하지 못한 레코드를 유지한 상태로, 결합할 레코드가 반드시 1개 이하가 되게 하는 조건을 사용해야함
 
-<details>
-
-<summary>SQL</summary>
-
 ```sql
 SELECT m.category_id,
        m.name,
@@ -141,8 +125,6 @@ FROM mst_categories AS m
 ;
 ```
 
-</details>
-
 | category\_id | name | sales  | top\_sale\_product |
 | ------------ | ---- | ------ | ------------------ |
 | 1            | dvd  | 850000 | D001               |
@@ -154,10 +136,6 @@ FROM mst_categories AS m
 * SELECT 구문 내부에서 상관 서브 쿼리를 사용할 수 있는 미들웨어의 경우, `JOIN`을 사용하지 않고 여러 테이블 값을 가로로 정렬할 수 있음
 * `JOIN`을 사용하지 않아 원래 마스터 테이블의 행 수가 변할 걱정 자체가 없으므로, 테이블의 누락과 중복을 회피할 수 있음
 * 방금 전 예제에서는 카테고리별 매출 테이블에 카테고리들의 _순위(rank)_를 사전에 컬럼으로 저장했지만, 상관 서브쿼리의 경우 내부에서 `ORDER BY` 구문과 `LIMIT` 구문을 사용하면 사전 처리를 하지 않고도 데이터를 하나로 압축할 수 있음
-
-<details>
-
-<summary>SQL</summary>
 
 ```sql
 SELECT m.category_id,
@@ -175,8 +153,6 @@ SELECT m.category_id,
 FROM mst_categories AS m
 ;
 ```
-
-</details>
 
 | category\_id | name | sales  | top\_sale\_product |
 | ------------ | ---- | ------ | ------------------ |

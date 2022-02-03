@@ -4,6 +4,10 @@ description: CQRS 패턴을 처음으로 소개한 Greg Young의 CQRS Document
 
 # CQRS Documents by Greg Young
 
+{% hint style="info" %}
+원문: [CQRS Documents by Greg Young](https://cqrs.files.wordpress.com/2010/11/cqrs\_documents.pdf)
+{% endhint %}
+
 ## 1. A Stereotypical Architecture
 
 도메인 주도 설계 기반 프로젝트의 아키텍처를 살펴보기 전에, 일반적으로 많은 사람들이 프로젝트에 적용하려고하는 표준 아키텍처가 무엇인지 분석할 필요가 있습니다. 이를 통해 생산성 측면의 비용을 최소화하면서 전통적인 아키텍처를 더 나은 아키텍처로 개선할 수 있습니다.
@@ -18,9 +22,9 @@ description: CQRS 패턴을 처음으로 소개한 Greg Young의 CQRS Document
 
 백업 저장소는 애플리케이션 서버 위에 위치합니다. \[그림 1]에서 도메인으로 표시된 논리 영역은 시스템의 비즈니스 로직을 담당합니다. 애플리케이션 서버에게 전달된 요청을 처리하기 위한 유효성 검사 및 오케스트레이션 로직(orchestration logic)이 이 영역에서 처리됩니다.
 
-_\[그림 1]에서는 데이터 계층(data tier)이 표현되지 않았지만 애플리케이션 서버와 데이터 저장소 사이에 데이터 계층이 존재할 수 있다는 점에 유의해야합니다. 또한 이 아키텍처를 구현하는데 도메인 영역이 필수 사항은 아니며_ [_테이블 모듈(Table Module)_](https://martinfowler.com/eaaCatalog/tableModule.html)_이나_ [_트랜잭션 스크립트(Transaction Script)_](https://martinfowler.com/eaaCatalog/transactionScript.html)_와 같은 패턴을 사용할 수도 있다는 점도 중요합니다. 이것들은_ 애플리케이션 서비스(_Application Services)로서 존재합니다._
+_\[그림 1]에서는 데이터 계층(data tier)이 표현되지 않았지만 애플리케이션 서버와 데이터 저장소 사이에 데이터 계층이 존재할 수 있다는 점에 유의해야합니다. 또한 <mark style="color:red;">이 아키텍처를 구현하는데 도메인 영역이 필수 사항은 아니며</mark>_ [_<mark style="color:red;">테이블 모듈(Table Module)</mark>_](https://martinfowler.com/eaaCatalog/tableModule.html)_<mark style="color:red;">이나</mark>_ [_<mark style="color:red;">트랜잭션 스크립트(Transaction Script)</mark>_](https://martinfowler.com/eaaCatalog/transactionScript.html)_<mark style="color:red;">와 같은 패턴을 사용할 수도 있다는 점도 중요합니다.</mark> 이것들은_ 애플리케이션 서비스(_Application Services)로서 존재합니다._
 
-"도메인"을 추상화하면 애플리케이션 서비스로 알려진 파사드(facade)을 찾을 수 있습니다. 애플리케이션 서비스는 도메인 및 데이터와의 인터페이스 역할을 하며, 도메인 소비자와 도메인 간의 결합을 줄여줍니다.
+"도메인"을 추상화하면 애플리케이션 서비스로 알려진 파사드(facade)을 찾을 수 있습니다. <mark style="color:red;">애플리케이션 서비스는 도메인 및 데이터와의 인터페이스 역할을 하며, 도메인 소비자와 도메인 간의 결합을 줄여줍니다.</mark>
 
 애플리케이션 서버 바깥 쪽에는 여러 종류의 원격 파사드(Remote Facade)를 확인 할 수 있습니다. 원격 파사드는 SOAP, 커스텀된 TCP/IP, HTTP를 통한 XML, 톰캣 심지어 비둘기 다리에 매달은 쪽지가 될 수도 있습니다. 원격 파사드는 관련된 상황과 도구에 따라 기본 기술 메커니즘에서 추상화될 수도 있고 그렇지 않을 수도 있습니다.
 
@@ -48,6 +52,33 @@ DTO를 수신한 애플리케이션 서버는 트랜잭션 및 세션을 시작�
 
 모든 아키텍처와 마찬가지로 위에서 언급한 아키텍처는 여러 특성을 가지고 있습니다. 몇몇 특성은 특정 시나리오에 대해 적합할 수 있으나 다른 시나리오에 대해서 매우 나쁠 수 있습니다. 설계자로서 우리는 요구사항에 대해 가장 적합한 특성을 활용하기 위해 노력해야합니다.
 
+#### Simplicity
+
+아키텍처의 특징을 살펴 볼 때는, 특정 아키텍처를 인기있게 만드는 특징이 무엇인지 주목하는 것이 중요합니다. 위의 아키텍처에서 가장 인기 있다고 볼 수 있는 특징은 \*\*심플(Simple)\*\*하다는 것입니다. 주니어 개발자는 이 아키텍처를 이용하여 구축된 시스템과 상호작용하는 방법을 빠른시간내에 익힐수 있습니다. 또한 이 아키텍처는 매우 일반적인 아키텍처이며, 모든 프로젝트에서 이 아키텍처를 사용할 수도 있습니다. 기존에 많은 사람들이 전통적인 아키텍처를 사용하고 있기 때문에, 팀에 새로운 멤버가 추가 되었을 때 신입 멤버는 전통적인 아키텍처가 적용된 시스템에 친숙하므로 적응에 필요한 비용을 줄일 수 있습니다.
+
+간단하며 많은 사람들에게 익숙하다는 장점으로 인해 개발 팀은 해당 아키텍처를 능숙하게 적용할 수 있으며, 새로운 프로젝트를 진행함에 있어 기본 아키텍처로 사용할 수 있습니다. The thought process of needing to align non-functional requirements really goes away as they know that this architecture will be good enough for 80% of the projects that they run into.
+
+#### Tooling
+
+전통적인 아키텍처를 활용하여 시스템을 구축하는데 필요한 시간을 최소화할 수 있는 프레임워크가 다수 존재합니다. ORM은 복잡한 객체 그래프로 변경 추적 및 트랜잭션 관리와 같은 중요한 서비스를 제공하는 대표적인 사례입니다. 다른 예로는 도메인 객체에서 양측의 DTO로 매핑되는 자동 매핑 프레임워크가 있으며, 이는 애플리케이션 서버에서 DTO를 앞뒤로 매핑하는 데 필요한 “plumbing code”를 대부분 제거합니다.
+
+물론 위에서 언급된 아키텍처와 관련하여 단점들도 있습니다. 그 중 <mark style="color:red;">**가장 중요한 단점은 DDD를 전통적인 아키텍처에 적용할 수 없다는 것**</mark>입니다.
+
+#### Domain Driven Design
+
+DDD를 적용하는 많은 사람들이 전통적인 아키텍처를 사용하지만 위의 아키텍처에서는 DDD를 적용할 수 없습니다. 유비쿼터스 언어(Ubiquitous Language)가 어떻게 객체 모델에 의해 표현되는지 살펴보면 왜 불가능한지 쉽게 알 수 있습니다. 위의 아키텍처에는 단 4개의 동사가 있습니다. 여기서 네 가지 동사는 등록(create), 조회(Read), 수정(update), 삭제(delete)입니다. 원격 파사드는 데이터 지향 인터페이스를 취하므로 애플리케이션 서비스는 반드시 동일한 인터페이스를 가져야합니다.
+
+이것은 도메인 내에 다른 동사가 없음을 의미합니다. 그러나 유비쿼터스 언어를 개선하기 위해 도메인 전문가와 이야기할 때 이 네 가지 동사에 초점을 맞춘 언어로 끝나는 경우는 극히 드뭅니다.
+
+관련된 안티패턴으로서 기존에 잘알려진 [“Anemic Model”](https://martinfowler.com/bliki/AnemicDomainModel.html)라는 도메인 모델링 패턴이 있습니다.
+
+_“Anemic Model은 언뜻 보기에는 괜찮은 패턴처럼 보입니다. 도메인 공간에 명사의 이름을 딴 객체가 많이 있으며,이 객체들은 실제 도메인 모델이 가지고있는 풍부한 관계와 구조로 연결되어 있습니다. The catch comes when you look at the behavior, and you realize that there is hardly any behavior on these objects, making them little more than bags of getters and setters. 실제로 이러한 모델에는 도메인 논리를 도메인 객체에 포함시키지 말라는 설계 규칙이 있습니다. 대신 모든 도메인 로직을 담당하는 일련의 서비스 객체가 있습니다. 이러한 서비스는 도메인 모델의 최상위에 있으며 데이터를 얻기 위해 도메인 모델을 사용합니다.” (Fowler, 2003)_
+
+위의 아키텍처에서 구현중인 모델은 처음에는 `Anemic Model` 처럼 보입니다. 그 이유는 애플리케이션 서비스가 그저 DTO와 도메인 객체를 앞뒤로 맵핑하고, 도메인 객체가 적은 행동(behavior)을 가진체 맵핑을 위해 접근자(getter)와 수정자(setter)로 어지럽혀져 있기 때문입니다. 객체가 서로 어떻게 관련되는지 보여주는 도메인 구조는 있습니다. 하지만...
+
+모든 비즈니스 로직이 서비스에 있기 때문에 이 아키텍처로 빈약한 도메인 모델을 생성할 수도 없습니다. 여기에서 서비스는 단순히 DTO를 도메인 객체로 매핑하고 실제 비즈니스 로직이 없습니다. 이 경우 많은 양의 비즈니스 로직은 도메인이나 애플리케이션 서버에 존재 하지 않습니다. 클라이언트에 존재할 수 있겠지만 메뉴얼 문서에 기재되어 있거나 시스템 사용자가 알고 있을 가능성이 큽니다.
+
+보고 있는 것과 같은 아키텍처에는 시스템의 많은 부분에서 데이터를 편집함으로써 복잡한 작업을 완료하는 방법에 대한 지침이 함께 제공되는 경향이 있습니다. 하나의 예로 직원의 성별이 수정됨으로써 건강 보험 정보도 함께 수정되어야하는 상황이 있습니다. 이것은 빈약한 모델을 만드는 것보다 훨씬 나쁩니다. 이것은 멋진 엑셀 스프레드시트를 만드는 것과 같습니다.
+
 ## 원문
 
-[CQRS Documents by Greg Young](https://cqrs.files.wordpress.com/2010/11/cqrs\_documents.pdf)
