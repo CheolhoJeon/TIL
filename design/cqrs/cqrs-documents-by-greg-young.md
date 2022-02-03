@@ -30,11 +30,7 @@ _\[그림 1]에서는 데이터 계층(data tier)이 표현되지 않았지만 �
 
 클라이언트의 일반적인 상호작용은 \[그림 2]에서 살펴 볼 수 있습니다.
 
-***
-
-![https://user-images.githubusercontent.com/42791260/54973038-98b0e600-4fd1-11e9-8d89-bff68af88659.pn](https://user-images.githubusercontent.com/42791260/54973038-98b0e600-4fd1-11e9-8d89-bff68af88659.png)
-
-**\[그림 2] Typical Client Interaction**
+![\[그림 2\] Typical Client Interaction](<../../.gitbook/assets/Screen Shot 2022-02-03 at 9.15.37 PM.png>)
 
 클라이언트의 기본적인 상호작용은 DTO(Data Transfer Object)의 상/하 상호작용으로 설명할 수 있습니다. 작업의 수명주기를 살펴 보면 API의 기능을 쉽게 이해할 수 있습니다. 화면을 통해 사용자의 정보를 수정한다고 가정해봅시다. 먼저 클라이언트는 사용자의 id를 담은 DTO를 포함한 요청을 원격 파사드로 보냅니다. 원격 파사드는 응답에 필요한 도메인 객체를 로드하고 도메인 객체를 DTO에 매핑한 다음 클라이언트에 반환합니다. \[그림 3]은 XML 형식의 DTO 예제를 보여줍니다. 여기서 전통적인 아키텍처에서 DTO는 클라이언트의 요청에 필요한 객체의 현재 상태를 저장하고 있음을 인지해야합니다.
 
@@ -42,9 +38,7 @@ _\[그림 1]에서는 데이터 계층(data tier)이 표현되지 않았지만 �
 
 특정 시점에서 사용자는 화면(UI)을 통해 데이터 편집을 완료하고 데이터를 저장하게 됩니다. 일반적으로 저장 버튼을 통해 구현되만 일부 사용자 인터페이스는 현재 데이터를 강제적으로 저장하는 경우도 있습니다.
 
-![https://user-images.githubusercontent.com/42791260/54978115-aae75000-4fe2-11e9-826d-b1993ed1c9fd.png](https://user-images.githubusercontent.com/42791260/54978115-aae75000-4fe2-11e9-826d-b1993ed1c9fd.png)
-
-**\[그림 3] Example in XML of a DTO**
+![\[그림 3\] Example in XML of a DTO](<../../.gitbook/assets/Screen Shot 2022-02-03 at 9.17.46 PM.png>)
 
 클라이언트는 데이터를 저장하기 위해 사용자가 화면에서 편집한 데이터를 DTO로 옮깁니다. 일반적으로 사용자에게 표시하기 위해 원격 파사드에서 요청한 DTO와 동일합니다. 이 후 클라이언트는 애플리케이션 서버로 완성한 DTO를 전송합니다.
 
