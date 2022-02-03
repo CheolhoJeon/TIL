@@ -23,6 +23,7 @@
     * [계산된 테이블에 이름 붙여 사용하기](database/sql/basics/undefined-4.md)
   * [Recipes](database/sql/recipes/README.md)
     * [시계열 기반으로 데이터 집계하기](database/sql/recipes/undefined.md)
+    * [다면척인 축을 사용해 데이터 집약하기](database/sql/recipes/undefined-1.md)
 
 ## Language
 
