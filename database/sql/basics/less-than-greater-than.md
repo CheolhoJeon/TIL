@@ -24,6 +24,10 @@ description: MAX(CASE ~) 구문, string_agg 함수, unnest 함수, CROSS JOIN, r
 | 2017-01-02 | sessions    | 700  |
 | 2017-01-02 | users       | 250  |
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 SELECT dt,
        MAX(CASE WHEN indicator = 'impressions' THEN val END) AS impressions,
@@ -33,6 +37,8 @@ FROM daily_kpi
 GROUP BY dt
 ORDER BY dt;
 ```
+
+</details>
 
 | dt         | impressions | sessions | uers |
 | ---------- | ----------- | -------- | ---- |
@@ -54,6 +60,10 @@ ORDER BY dt;
 | 100002       | D002        | 3000  |
 | 100003       | A001        | 3000  |
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 SELECT purchase_id,
 
@@ -64,6 +74,8 @@ FROM purchase_detail_log
 GROUP BY purchase_id
 ORDER BY purchase_id;
 ```
+
+</details>
 
 | purchase\_id | string\_agg    | amount |
 | ------------ | -------------- | ------ |
@@ -86,6 +98,10 @@ ORDER BY purchase_id;
 
 * 컬럼으로 표현된 가로 기반 데이터의 특징은 데이터의 수가 고정되어 있다는 것
 * 행으로 전개할 데이터 수가 고정되었다면, 데이터 수와 같은 수의 일련 번호를 가진 피벗 테이블을 만들고 `CROSS JOIN` 하면 됨
+
+<details>
+
+<summary>SQL</summary>
 
 ```sql
 SELECT q.year,
@@ -117,6 +133,8 @@ FROM quarterly_sales AS q
      ) AS p
 ;
 ```
+
+</details>
 
 | year | quarter | sales |
 | ---- | ------- | ----- |
@@ -168,6 +186,10 @@ SELECT UNNEST(ARRAY['A001', 'A002', 'A003']) AS product_id;
 * 일반적인 SELECT 구문 내부에는 레코드에 포함된 스칼라 값을 리턴하는 함수와 컬럼 이름을 지정할 수 있지만, 테이블 함수는 ‘테이블’을 리턴함
 * 스칼라 값과 테이블 함수의 리턴 값을 동시에 추출하고 싶은 경우, 테이블 함수를 FROM 구문 내부에 작성하고, JOIN 구문을 사용해 원래 테이블과 테이블 함수의 리턴 값을 결합해야함
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 SELECT purchase_id,
        product_id
@@ -175,6 +197,8 @@ FROM purchase_log AS p
          CROSS JOIN UNNEST(string_to_array(product_ids, ',')) AS product_id
 ;
 ```
+
+</details>
 
 | purchase\_id | product\_id |
 | ------------ | ----------- |
@@ -188,12 +212,18 @@ FROM purchase_log AS p
 * `PostgreSQL`의 경우 SELECT 구문 내부에 스칼라 값과 테이블 함수를 동시에 지정할 수 있음
 * 또한 문자열을 구분자로 분할해서 테이블화하는 `regexp_split_to_table` 함수가 구현되어 있으므로, 아래와 같이 간단하게 행으로 전개할 수 있음
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 SELECT purchase_id,
        -- 쉼표로 구분된 문자열을 한 번에 행으로 전개하기
        regexp_split_to_table(product_ids, ',') AS product_id
 FROM purchase_log;
 ```
+
+</details>
 
 | purchase\_id | product\_id |
 | ------------ | ----------- |

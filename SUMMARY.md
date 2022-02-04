@@ -35,6 +35,6 @@
 * [CQRS](design/cqrs/README.md)
   * [CQRS Documents by Greg Young](design/cqrs/cqrs-documents-by-greg-young.md)
 
-## Group 1
+## Etc
 
-* [CPS](group-1/cps.md)
+* [CPS](etc/cps.md)

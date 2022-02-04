@@ -32,6 +32,10 @@ description: CTE(WITH 구문)
 
 아래의 코드는 `ROW_NUMBER` 함수를 사용해 카테고리별 순위를 붙임
 
+<details>
+
+<summary>SQL</summary>
+
 ```sql
 WITH product_sale_ranking AS (
     SELECT category_name,
@@ -45,6 +49,8 @@ SELECT *
 FROM product_sale_ranking
 ;
 ```
+
+</details>
 
 | category\_name | product\_id | sales | rank |
 | -------------- | ----------- | ----- | ---- |
@@ -60,6 +66,10 @@ FROM product_sale_ranking
 | dvd            | D003        | 10000 | 3    |
 
 ### 2. 카테고리들의 순위에서 유니크한 순위 목록을 계산하는 쿼리
+
+<details>
+
+<summary>SQL</summary>
 
 ```sql
 WITH product_sale_ranking AS (
@@ -80,6 +90,8 @@ FROM mst_ranks
 ;
 ```
 
+</details>
+
 | rank |
 | ---- |
 | 1    |
@@ -88,6 +100,10 @@ FROM mst_ranks
 | 4    |
 
 ### 3. 카테고리들의 순위를 횡단적으로 출력하는 쿼리
+
+<details>
+
+<summary>SQL</summary>
 
 ```sql
 WITH product_sale_ranking AS (
@@ -119,6 +135,8 @@ FROM mst_ranks AS r
                    ON r.rank = p3.rank AND p3.category_name = 'book'
 ;
 ```
+
+</details>
 
 | rank | dvd  | dvd\_sales | cd   | cd\_sales | book | book\_sales |
 | ---- | ---- | ---------- | ---- | --------- | ---- | ----------- |
