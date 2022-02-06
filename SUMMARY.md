@@ -5,8 +5,8 @@
 ## OS
 
 * [Concepts](os/concepts/README.md)
-  * [인트로](os/concepts/undefined.md)
-  * [프로세스](os/concepts/undefined-1.md)
+  * [Intro](os/concepts/intro.md)
+  * [Process](os/concepts/process.md)
 
 ## Network
 

@@ -1,6 +1,4 @@
-# 프로세스
-
-
+# Process
 
 * <mark style="color:red;">프로세스(process)</mark>란 실행 중인 프로그램을 말함
 * 모든 프로세스는 잠재적으로 병행 실행이 가능하고, CPU(또는 CPU들)는 이들 프로세스 가운데서 다중화(multiplex)됨
@@ -13,7 +11,7 @@
   * <mark style="color:red;">텍스트 섹션(Text section)</mark>: 실행 코드
   * <mark style="color:red;">데이터 섹션(Data section)</mark>: 전역 변수
   * <mark style="color:red;">힙 섹션(Heap section)</mark>: 프로그램 실행 중에 동적으로 할당되는 메모리
-  * <mark style="color:red;">스택 섹션(Stack section)</mark>: 함수를 호출할 때 임시 데이터 저장 장소(예: 함수 매개변수, 복귀 주소 및 지역 변수)
+  * <mark style="color:red;">스택 섹션(Stack section)</mark>: 함수를 호출할 때 임시 데이터 저장장소(예: 함수 매개변수, 복귀주소 및 지역변수)
 
 ![메모리에 상주하고 있는 프로세스의 레이아웃](../../.gitbook/assets/Untitled-17.png)
 
