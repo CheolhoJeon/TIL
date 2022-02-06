@@ -91,3 +91,7 @@ CPU: 명령을 실행하는 하드웨어&#x20;
 * 이 긴급 대기 모드의 호스트는 활성 서버들을 감시하다가, 서버가 고장나면 활성 서버가 됨
 * <mark style="color:red;">대칭형 클러스터링(symmetric clustering)</mark>에서는 둘 이상의 호스트들이 애플리케이션을 각자 실행하면서 서로를 감시함
 * <mark style="color:blue;">가용한 하드웨어를 모두 사용하기 때문에 대칭형 구성이 더 효율적임</mark>
+
+<mark style="color:blue;"></mark>
+
+Continue....
