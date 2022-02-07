@@ -38,6 +38,7 @@
 
 ## Design
 
+* [MSA](design/msa.md)
 * [CQRS](design/cqrs/README.md)
   * [CQRS Documents by Greg Young](design/cqrs/cqrs-documents-by-greg-young.md)
 
