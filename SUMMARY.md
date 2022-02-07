@@ -33,7 +33,9 @@
 
 ## Language
 
-* [Java](language/java.md)
+* [Java](language/java/README.md)
+  * [Introduce](language/java/introduce.md)
+  * [Variable And Type](language/java/variable-and-type.md)
 * [Kotlin](language/kotlin/README.md)
   * [Basics](language/kotlin/basics.md)
 

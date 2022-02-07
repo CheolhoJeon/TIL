@@ -1,4 +1,4 @@
-# Java
+# Introduce
 
 ## 프로그래밍 언어란?
 
@@ -90,7 +90,7 @@
   * JDK와 JRE는 운영체제에 맞게 설치해야함
 * JVM은 운영체제에 종속적
 
-![](../.gitbook/assets/48661072-cd56e300-eaaf-11e8-8680-8e44c83b6407.png)
+![](../../.gitbook/assets/48661072-cd56e300-eaaf-11e8-8680-8e44c83b6407.png)
 
 ## 자바 개발 환경 구축
 
