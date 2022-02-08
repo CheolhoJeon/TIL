@@ -41,7 +41,9 @@
 
 ## Design
 
-* [MSA](design/msa.md)
+* [MSA](design/msa/README.md)
+  * [Microservice Patterns](design/msa/microservice-patterns/README.md)
+    * [마이크로서비스 쿼리 구현](design/msa/microservice-patterns/undefined.md)
 * [CQRS](design/cqrs/README.md)
   * [CQRS Documents by Greg Young](design/cqrs/cqrs-documents-by-greg-young.md)
 
