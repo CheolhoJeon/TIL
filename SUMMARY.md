@@ -41,7 +41,7 @@
 
 ## Design
 
-* [MSA](design/msa/README.md)
+* [MSA](design/msa.md)
   * [Microservice Patterns](design/msa/microservice-patterns/README.md)
     * [마이크로서비스 쿼리 구현](design/msa/microservice-patterns/undefined.md)
 * [CQRS](design/cqrs/README.md)
