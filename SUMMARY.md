@@ -36,6 +36,7 @@
 * [Java](language/java/README.md)
   * [Introduce](language/java/introduce.md)
   * [Variable And Type](language/java/variable-and-type.md)
+  * [Operator](language/java/operator.md)
 * [Kotlin](language/kotlin/README.md)
   * [Basics](language/kotlin/basics.md)
 
