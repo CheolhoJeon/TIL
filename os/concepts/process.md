@@ -77,5 +77,5 @@
 * 이 단일 제어 스레드는 프로세스가 한 번에 단지 한 가지의 일만 실행하도록 허용함
   * 따라서, 문자를 입력하면서 동시에 철자 검사기를 실행 할 수 없음
 * 대부분의 현대 운영체제들은 한 프로세스가 다수의 실행 스레드를 가질 수 있도록 허용함으로써, 프로세스가 한 번에 하나 이상의 일을 수행할 수 있도록 허용함
-* 이러한 특성은 [다중 처리기 시스템](https://app.gitbook.com/s/6s8PBLsFpflfD85fhlnn/\~/changes/qCbzJ6FuM3s7bFF1XGpb/os/concepts/undefined#1.3.2-\_multiprocessor-systems)에서 이익을 얻을 수 있는데, 여러 스레드가 병렬로 실행될 수 있음
+* 이러한 특성은 [멀티 프로세서 시스템](https://app.gitbook.com/s/6s8PBLsFpflfD85fhlnn/\~/changes/qCbzJ6FuM3s7bFF1XGpb/os/concepts/undefined#1.3.2-\_multiprocessor-systems)에서 이익을 얻을 수 있는데, 여러 스레드가 병렬로 실행될 수 있음
 * <mark style="color:blue;">스레드를 지원하는 시스템에서 PCB는 각 스레드에 관한 정보를 포함하도록 확장됨</mark>

@@ -5,7 +5,7 @@
 ## OS
 
 * [Concepts](os/concepts/README.md)
-  * [Intro](os/concepts/intro.md)
+  * [Introduction](os/concepts/introduction.md)
   * [Process](os/concepts/process.md)
   * [Threads & Concurrency](os/concepts/threads-and-concurrency.md)
 
