@@ -7,7 +7,7 @@
 * [Concepts](os/concepts/README.md)
   * [Intro](os/concepts/intro.md)
   * [Process](os/concepts/process.md)
-  * [스레드와 병행성](os/concepts/undefined.md)
+  * [Threads & Concurrency](os/concepts/threads-and-concurrency.md)
 
 ## Network
 
