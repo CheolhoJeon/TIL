@@ -18,6 +18,9 @@
 
 ## DATABASE
 
+* [Concepts](database/concepts/README.md)
+  * [회복과 병행 제어](database/concepts/undefined/README.md)
+    * [트랜잭션](database/concepts/undefined/undefined.md)
 * [SQL](database/sql/README.md)
   * [Basics](database/sql/basics/README.md)
     * [날짜와 타임스탬프 다루기](database/sql/basics/undefined.md)
