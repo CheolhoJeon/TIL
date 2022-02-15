@@ -13,17 +13,13 @@
 
 * 데이터베이스의 무결성과 일관성을 보장하기 위해, 작업 수행에 필요한 연산들을 하나의 트랜잭션으로 제대로 정의하고 관리해야 함
 
-### 예 1: 계좌이체 트랜잭션
+### 1-2. 트랜잭션의 예
 
-![](../../../.gitbook/assets/Untitled-25.png)
-
-### 예 2: 상품주문 트랜잭션
-
-![](../../../.gitbook/assets/Untitled-26.png)
+![](../../../.gitbook/assets/Untitled-25.png) ![](../../../.gitbook/assets/Untitled-26.png)
 
 ## 2. 트랜잭션의 특성 - ACID
 
-![](../../../.gitbook/assets/Untitled-27.png)
+![](../../../.gitbook/assets/Untitled-34.png)
 
 ### 2-1. 원자성(atomicity)
 
@@ -34,17 +30,13 @@
 * 원자성의 보장을 위해 장애 발생 시 회복 기능이 필요함
 * **완료된 트랜잭션이 갱신한 사항은 트랜잭션의 영향을 재수행함으로써 트랜잭션의 원자성을 보장함**
 
-![](../../../.gitbook/assets/Untitled-28.png)
-
-![](<../../../.gitbook/assets/Untitled-29 (1).png>)
+![](../../../.gitbook/assets/Untitled-28.png) ![](<../../../.gitbook/assets/Untitled-29 (1).png>)
 
 ### 2-2. 일관성(consistency)
 
 * 트랜잭션이 성공적으로 수행된 후에도 데이터베이스가 일관된 상태를 유지해야 함을 의미함
 
-![](../../../.gitbook/assets/Untitled-30.png)
-
-![](../../../.gitbook/assets/Untitled-31.png)
+![](../../../.gitbook/assets/Untitled-30.png) ![](../../../.gitbook/assets/Untitled-31.png)
 
 ### 2-3. 격리성(isolation), 고립성
 
@@ -54,9 +46,7 @@
 * DBMS의 <mark style="color:red;">병행 제어 모듈</mark>이 트랜잭션의 격리성을 보장함
   * DBMS는 응용들의 요구사항에 따라 **다양한 격리 수준(isolation level)**을 제공함
 
-![](../../../.gitbook/assets/Untitled-32.png)
-
-![](../../../.gitbook/assets/Untitled-33.png)
+![](../../../.gitbook/assets/Untitled-32.png) ![](../../../.gitbook/assets/Untitled-33.png)
 
 ### 2-4. 지속성(durability)
 
@@ -66,7 +56,3 @@
 * 지속성의 보장을 위해서는 장애 발생 시 <mark style="color:red;">회복 기능</mark>이 필요함\
 
 * DBMS의 회복 모듈은 시스템이 다운되는 경우에도, 트랜잭션의 지속성을 보장함
-
-### 2-5. 트랜잭션의 특성을 지원하는 DBMS 기능
-
-![](../../../.gitbook/assets/Untitled-34.png)
