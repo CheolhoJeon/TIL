@@ -78,7 +78,7 @@
 {% endtab %}
 {% endtabs %}
 
-### 1-4. 트랜잭션의 상태
+## 4. 트랜잭션의 상태
 
 ![](../../../.gitbook/assets/Untitled-38.png)
 
