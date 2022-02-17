@@ -20,7 +20,7 @@
 
 ## 2. 트랜잭션의 특성 - ACID
 
-![](../../../.gitbook/assets/Untitled-34.png)
+![](../../../.gitbook/assets/IMG\_0002.PNG)
 
 ### 2-1. 원자성(atomicity)
 
@@ -60,7 +60,7 @@
 
 ## 3. 트랜잭션의 연산
 
-![](../../../.gitbook/assets/Untitled-35.png)
+![](../../../.gitbook/assets/IMG\_0004.PNG)
 
 {% tabs %}
 {% tab title="commit" %}
@@ -80,7 +80,7 @@
 
 ## 4. 트랜잭션의 상태
 
-![](../../../.gitbook/assets/Untitled-38.png)
+![](../../../.gitbook/assets/IMG\_0005.PNG)
 
 {% tabs %}
 {% tab title="활동(active) 상태" %}
