@@ -43,7 +43,11 @@
   * [Variable And Type](language/java/variable-and-type.md)
   * [Operator](language/java/operator.md)
 * [Kotlin](language/kotlin/README.md)
-  * [Basics](language/kotlin/basics.md)
+  * [Basics](language/kotlin/basics/README.md)
+    * [Hello, World](language/kotlin/basics/hello-world.md)
+    * [var & val, Data Types](language/kotlin/basics/var-and-val-data-types.md)
+    * [Functions](language/kotlin/basics/functions.md)
+    * [Boolean](language/kotlin/basics/boolean.md)
 
 ## Design
 
