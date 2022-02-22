@@ -35,16 +35,14 @@ description: COUNT 함수, COUNT(DISTINCT ~), ROLLUP 구문
 ### 1-1. 액션과 관련된 지표 집계하기
 
 {% hint style="info" %}
-UU(Unique Users): 중복 없이 집계된 사용자 수 Usage Rate: 특정 액션 UU를 전체 액션 UU로 나눈 것
+**UU(Unique Users):** 중복 없이 집계된 사용자 수&#x20;
+
+**Usage Rate:** 특정 액션 UU를 전체 액션 UU로 나눈 것
 {% endhint %}
 
 <details>
 
 <summary>SQL</summary>
-
-
-
-</details>
 
 ```sql
 WITH stats AS (
@@ -68,6 +66,8 @@ FROM action_log AS l
 GROUP BY l.action, s.total_UU;
 ```
 
+</details>
+
 | action    | action\_uu | acount\_count | total\_uu | usage\_rate | count\_per\_user |
 | --------- | ---------- | ------------- | --------- | ----------- | ---------------- |
 | add\_cart | 3          | 12            | 4         | 75          | 4                |
@@ -78,9 +78,13 @@ GROUP BY l.action, s.total_UU;
 
 ### 1-2. 로그인 사용자와 비로그인 사용자를 구분해서 집계하기
 
-\<aside> 💡 아쉽게도 샘플 데이터에는 로그인하지 않은 사용자가 없어 결과 데이터에 드러나지 않음
+{% hint style="info" %}
+샘플 데이터에는 로그인하지 않은 사용자가 없어 결과 데이터에 드러나지 않음
+{% endhint %}
 
-\</aside>
+<details>
+
+<summary>SQL</summary>
 
 ```sql
 WITH action_log_with_status AS (
@@ -100,6 +104,8 @@ GROUP BY ROLLUP (action, login_status)
 ;
 ```
 
+</details>
+
 | action    | login\_status | action\_uu | action\_count |
 | --------- | ------------- | ---------- | ------------- |
 | add\_cart | login         | 3          | 12            |
@@ -115,6 +121,10 @@ GROUP BY ROLLUP (action, login_status)
 | all       | all           | 4          | 20            |
 
 ### 1-3. 회원과 비회원을 구분해서 집계하기
+
+<details>
+
+<summary>SQL</summary>
 
 ```sql
 WITH action_log_with_status AS (
@@ -134,6 +144,8 @@ SELECT *
 FROM action_log_with_status
 ;
 ```
+
+</details>
 
 | session  | user\_id | action    | member\_status | stamp               |
 | -------- | -------- | --------- | -------------- | ------------------- |
