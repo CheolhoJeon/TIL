@@ -36,6 +36,7 @@
   * [Recipes](database/sql/recipes/README.md)
     * [시계열 기반으로 데이터 집계하기](database/sql/recipes/undefined.md)
     * [다면척인 축을 사용해 데이터 집약하기](database/sql/recipes/undefined-1.md)
+    * [사용자 전체의 특징과 경향 찾기](database/sql/recipes/undefined-2.md)
 
 ## Language
 
