@@ -1,5 +1,5 @@
 ---
-description: COUNT 함수, COUNT(DISTINCT ~), ROLLUP 구문
+description: COUNT 함수, COUNT(DISTINCT ~), ROLLUP 구문, CASE 식, CAST, JOIN, GROUP BY
 ---
 
 # 사용자 전체의 특징과 경향 찾기
@@ -158,3 +158,99 @@ FROM action_log_with_status
 | 989004ea | U001     | purchase  | member         | 2016-11-03 18:10:00 |
 | 9afaf87c | U002     | purchase  | member         | 2016-11-04 13:00:00 |
 | 9afaf87c | U001     | purchase  | member         | 2016-11-04 15:00:00 |
+
+## 2. 연령별 구분 집계하기
+
+> 연령별 구분 목록
+
+| 연령별 구분 | 설명             |
+| ------ | -------------- |
+| C      | 4\~12세 남성과 여성  |
+| T      | 13\~19세 남성과 여성 |
+| M1     | 20\~34세의 남성    |
+| M2     | 35\~49세의 남성    |
+| M3     | 50세 이상의 남성     |
+| F1     | 20\~34세의 여성    |
+| F2     | 35\~49세의 여성    |
+| F3     | 50세 이상의 여성     |
+
+<details>
+
+<summary>SQL</summary>
+
+```sql
+WITH mst_users_with_int_birth_date AS (
+    SELECT *,
+           20220223                                                        AS int_specific_date,
+           CAST(REPLACE(SUBSTRING(birth_date, 1, 10), '-', '') AS integer) AS int_birth_date
+    FROM mst_users
+),
+     mst_users_with_age AS (
+         SELECT *,
+                FLOOR((int_specific_date - int_birth_date) / 10000) AS age
+         FROM mst_users_with_int_birth_date
+     ),
+     mst_users_with_category AS (
+         SELECT user_id,
+                sex,
+                age,
+                CONCAT(
+                        CASE WHEN age <= 20 THEN '' ELSE sex END,
+                        CASE
+                            WHEN age BETWEEN 4 AND 12 THEN 'C'
+                            WHEN age BETWEEN 13 AND 19 THEN 'T'
+                            WHEN age BETWEEN 20 AND 34 THEN '1'
+                            WHEN age BETWEEN 35 AND 49 THEN '2'
+                            WHEN age >= 50 THEN '3'
+                        END
+                    ) AS category
+         FROM mst_users_with_age
+     )
+SELECT category,
+       COUNT(*) AS user_count
+FROM mst_users_with_category
+GROUP BY category
+ORDER BY category;
+```
+
+</details>
+
+| category | user\_count |
+| -------- | ----------- |
+| F1       | 1           |
+| F3       | 4           |
+| M1       | 1           |
+| M2       | 1           |
+| M3       | 1           |
+| T        | 2           |
+
+## 3. 연령별 구분의 특징 추출하기
+
+<details>
+
+<summary>SQL</summary>
+
+```sql
+WITH mst_users_with_int_birth_date AS (
+    // '2.연령별 구분 집계하기'와 동일
+),
+     mst_users_with_age AS (
+         // '2.연령별 구분 집계하기'와 동일
+     )
+SELECT p.category AS product_category,
+       u.category AS user_category,
+       COUNT(*)   AS purchase_count
+FROM mst_users_with_category u
+         JOIN action_log p ON u.user_id = p.user_id
+WHERE action = 'purchase'
+GROUP BY p.category, u.category;
+```
+
+</details>
+
+| product\_category | user\_category | purchase\_count |
+| ----------------- | -------------- | --------------- |
+| action            | M2             | 1               |
+| drama             | F3             | 2               |
+| drama             | M2             | 2               |
+
