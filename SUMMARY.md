@@ -67,6 +67,7 @@
   * [테스트 주도 개발 기초](test/tdd/undefined-1/README.md)
     * [코드 기능 명세](test/tdd/undefined-1/undefined.md)
     * [테스트 기법](test/tdd/undefined-1/undefined-1.md)
+    * [코드 분해](test/tdd/undefined-1/undefined-2.md)
 
 ## Etc
 
