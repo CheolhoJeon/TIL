@@ -44,6 +44,7 @@
   * [Introduce](language/java/introduce.md)
   * [Variable And Type](language/java/variable-and-type.md)
   * [Operator](language/java/operator.md)
+  * [If Statement & Looping](language/java/if-statement-and-looping.md)
 * [Kotlin](language/kotlin/README.md)
   * [Basics](language/kotlin/basics/README.md)
     * [Hello, World](language/kotlin/basics/hello-world.md)
