@@ -65,12 +65,12 @@
 * [TDD](test/tdd/README.md)
   * [TDD START](test/tdd/tdd-start/README.md)
     * [TDD 시작](test/tdd/tdd-start/tdd.md)
-  * [REAL TDD](test/tdd/real-tdd/README.md)
-    * [좋은 코드](test/tdd/real-tdd/undefined.md)
-    * [테스트 주도 개발 기초](test/tdd/real-tdd/undefined-1/README.md)
-      * [코드 기능 명세](test/tdd/real-tdd/undefined-1/undefined.md)
-      * [테스트 기법](test/tdd/real-tdd/undefined-1/undefined-1.md)
-      * [코드 분해](test/tdd/real-tdd/undefined-1/undefined-2.md)
+  * [TDD REAL](test/tdd/tdd-real/README.md)
+    * [좋은 코드](test/tdd/tdd-real/undefined.md)
+    * [테스트 주도 개발 기초](test/tdd/tdd-real/undefined-1/README.md)
+      * [코드 기능 명세](test/tdd/tdd-real/undefined-1/undefined.md)
+      * [테스트 기법](test/tdd/tdd-real/undefined-1/undefined-1.md)
+      * [코드 분해](test/tdd/tdd-real/undefined-1/undefined-2.md)
 
 ## Etc
 
