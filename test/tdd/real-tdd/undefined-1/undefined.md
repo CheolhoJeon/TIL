@@ -5,7 +5,7 @@
 * 비즈니스 시스템의 도메인은 비즈니스
 * <mark style="color:red;">**문제를 충분히 이해하지 못하면 문제를 푸는 도구를 잘 만들 수 없다.**</mark>
 
-![](../../../.gitbook/assets/Untitled-40.png)
+![](../../../../.gitbook/assets/Untitled-40.png)
 
 {% tabs %}
 {% tab title="비즈니스 전문가" %}
