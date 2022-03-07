@@ -56,7 +56,8 @@
 
 * [MSA](design/msa.md)
   * [Microservice Patterns](design/msa/microservice-patterns/README.md)
-    * [마이크로서비스 쿼리 구현](design/msa/microservice-patterns/undefined.md)
+    * [모놀리식과 마이크로서비스](design/msa/microservice-patterns/undefined.md)
+    * [마이크로서비스 쿼리 구현](design/msa/microservice-patterns/undefined-1.md)
 * [CQRS](design/cqrs/README.md)
   * [CQRS Documents by Greg Young](design/cqrs/cqrs-documents-by-greg-young.md)
 
