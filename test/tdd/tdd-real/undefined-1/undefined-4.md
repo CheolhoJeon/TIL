@@ -47,6 +47,8 @@ private static Stream<Arguments> provideStringsForBannedWord() {
 }
 ```
 
+{% embed url="https://gmlwjd9405.github.io/2019/11/27/junit5-guide-parameterized-test.html" %}
+
 ### 3. Faker를 사용해 입력 데이터 생성하기
 
 ```java
@@ -61,6 +63,8 @@ void testAboutGeneratedBannedWords() {
     assertEquals(expected, actual);
 }
 ```
+
+{% embed url="https://github.com/DiUS/java-faker" %}
 
 ```java
 public class RefineText {
@@ -82,3 +86,4 @@ public class RefineText {
 
 }
 ```
+
