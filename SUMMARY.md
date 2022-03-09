@@ -60,6 +60,8 @@
     * [마이크로서비스 쿼리 구현](design/msa/microservice-patterns/undefined-1.md)
 * [CQRS](design/cqrs/README.md)
   * [CQRS Documents by Greg Young](design/cqrs/cqrs-documents-by-greg-young.md)
+* [DDD](design/ddd/README.md)
+  * [도메인의 격리](design/ddd/undefined.md)
 
 ## Test
 
