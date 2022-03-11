@@ -77,6 +77,7 @@
       * [코드 분해](test/tdd/tdd-real/undefined-1/undefined-2.md)
       * [단위 테스트](test/tdd/tdd-real/undefined-1/undefined-3.md)
       * [테스트 우선 개발](test/tdd/tdd-real/undefined-1/undefined-4.md)
+      * [정리된 코드](test/tdd/tdd-real/undefined-1/undefined-5.md)
 
 ## Etc
 
