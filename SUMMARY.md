@@ -55,7 +55,8 @@
 ## Design
 
 * [OOP](design/oop/README.md)
-  * [서브클래싱과 서브타이핑](design/oop/undefined.md)
+  * [설계 품질과 트레이드 오프](design/oop/undefined.md)
+  * [서브클래싱과 서브타이핑](design/oop/undefined-1.md)
 * [MSA](design/msa.md)
   * [Microservice Patterns](design/msa/microservice-patterns/README.md)
     * [모놀리식과 마이크로서비스](design/msa/microservice-patterns/undefined.md)
