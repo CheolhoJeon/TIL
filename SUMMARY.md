@@ -54,6 +54,8 @@
 
 ## Design
 
+* [OOP](design/oop/README.md)
+  * [서브클래싱과 서브타이핑](design/oop/undefined.md)
 * [MSA](design/msa.md)
   * [Microservice Patterns](design/msa/microservice-patterns/README.md)
     * [모놀리식과 마이크로서비스](design/msa/microservice-patterns/undefined.md)
