@@ -1,6 +1,6 @@
 # About Me
 
-## Hi there! ![](https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif)
+## Hi there! <img src="https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif" alt="" data-size="line">
 
 💻 2년차 백엔드 엔지니어(사실 대학원에서 백엔드를 시작해서 내가 몇년차인지 모르겠음)
 

@@ -7,7 +7,7 @@
 
 
 
-* [Reactive Manifesto](http://www.reactivemanifesto.org)에 기술되어 있으며, [Reactive Streams](http://www.reactive-streams.org)와 [Reactive Extensions](http://www.reactivex.io)에 구현되어 있는 아키텍처 패턴(Architectural pattern)은 비동시 메시징 방식을 선호하고 요청/응답 스타일의 통신 방식을 뛰어넘음(?)
+* [Reactive Manifesto](http://www.reactivemanifesto.org/)에 기술되어 있으며, [Reactive Streams](http://www.reactive-streams.org/)와 [Reactive Extensions](http://www.reactivex.io/)에 구현되어 있는 아키텍처 패턴(Architectural pattern)은 비동시 메시징 방식을 선호하고 요청/응답 스타일의 통신 방식을 뛰어넘음(?)
 * _RSocket_ 프로토콜은 reactive 원칙을 수용하는 형식적인(formal) 통신 프로토콜임
 * 아래의 내용들은 새로운 프로토콜을 정의하게된 동기들을 나열함
 
@@ -15,7 +15,7 @@
 
 * 네트워크 통신은 기본적으로 비동기임
 * RSocket은 이를 수용하고 단일 네트워크 연결을 통해 다중화된(multiplexed)된 메시지 스트림으로 모든 통신을 모델링하며, 응답을 기다리는 동안 동기적으로 차단하지 않음
-*   [리액티브 선언서(Reactive Manifesto)](http://www.reactivemanifesto.org)는 다음과 같이 기술하고 있음:
+*   [리액티브 선언서(Reactive Manifesto)](http://www.reactivemanifesto.org/)는 다음과 같이 기술하고 있음:
 
     > `Reactive System`는은 느슨한 결합(loose coupling), 격리(isolation), 위치 투명성(location transpareny)을 보장하고 구성요소 간의 바운더리를 설정하기 위해 비동기 메시지 전달에 의존합니다. 명시적인 메시지-전달(message-passing)을 활용하면 시스템의 메시지 큐를 구현 및 모니터링하고 필요할 때 back-pressure를 적용하여 부하 관리, 탄력성 및 흐름 제어가 가능합니다. Non-blocking 통신을 사용하면 수신자가 활성(active) 상태일 때만 리소스를 사용할 수 있으므로 시스템 오버헤드가 줄어듭니다.
 *   또한, [HTTP/2 FAQ](https://http2.github.io/faq/#why-is-http2-multiplexed)는 지속적인 연결을 통한 다중화된(multiplexing) 메시지 지향 프로토콜을 채택하는 동기를 잘 설명하고 있음:

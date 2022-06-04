@@ -64,9 +64,12 @@
 * [CQRS](design/cqrs/README.md)
   * [CQRS Documents by Greg Young](design/cqrs/cqrs-documents-by-greg-young.md)
 * [DDD](design/ddd/README.md)
-  * [도메인의 격리](design/ddd/undefined.md)
-  * [소프트웨어에서 표현되는 모델](design/ddd/undefined-1.md)
-  * [도메인 객체의 생명 주기](design/ddd/undefined-2.md)
+  * [Implementing DDD](design/ddd/implementing-ddd/README.md)
+    * [애그리거트](design/ddd/implementing-ddd/undefined.md)
+  * [DDD - Eric Evans](design/ddd/ddd-eric-evans/README.md)
+    * [도메인의 격리](design/ddd/ddd-eric-evans/undefined.md)
+    * [소프트웨어에서 표현되는 모델](design/ddd/ddd-eric-evans/undefined-1.md)
+    * [도메인 객체의 생명 주기](design/ddd/ddd-eric-evans/undefined-2.md)
 
 ## Test
 
