@@ -87,6 +87,27 @@ public class Product extends ConcurrencySafeEntity {
 
 > 첫 번째 시도였던 ‘큰 클러스터의 애그리거트 설계'에선 메서드 시그니처가 아래와 같은 모습이었음
 
+```java
+// 모든 메서드의 반환 타입이 void
+public class Product ... {
+	...
+	public void planBacklogItem(
+		String aSummary, String aCategory,
+		BacklogItemType aType, StoryPoints aStoryPoints
+	) { ... }
+
+	public void scheduleRelease(
+		String aName, String aDescription,
+		Date aBegins, Date anEnds
+	) { ... }
+
+	public void scheduleSprint(
+		String aName, String aGoals,
+		Date aBegins, Date anEnds
+	) { ... }
+}
+```
+
 
 
 
