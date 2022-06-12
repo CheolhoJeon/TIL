@@ -68,9 +68,9 @@
     * [애그리거트](design/ddd/implementing-ddd/undefined.md)
     * [바운디드 컨텍스트의 통합](design/ddd/implementing-ddd/undefined-1.md)
   * [DDD - Eric Evans](design/ddd/ddd-eric-evans/README.md)
-    * [도메인의 격리](design/ddd/ddd-eric-evans/undefined.md)
-    * [소프트웨어에서 표현되는 모델](design/ddd/ddd-eric-evans/undefined-1.md)
-    * [도메인 객체의 생명 주기](design/ddd/ddd-eric-evans/undefined-2.md)
+    * [도메인의 격리](design/ddd/undefined.md)
+    * [소프트웨어에서 표현되는 모델](design/ddd/undefined-1.md)
+    * [도메인 객체의 생명 주기](design/ddd/undefined-2.md)
 
 ## Test
 
