@@ -272,13 +272,47 @@ public class TeamMemberEnableListener extends ExchangeListener {
 * 다음은 `TeamService`가 이런 상황을 어떻게 대응하는지 보여줌
 
 ```java
+package com.saasovation.agilepm.application;
+...
+public class TeamService ... {
+    
+    @Autowired
+    private ProductOwnerRepository productOwnerRepository;
+    
+    @Autowired
+    private TeamMemberRepository teamMemberRepository;
+    
+    ...
+    
+    @Transactional
+    public void enableProductOwner(EnableProdctOwnerCommand aCommand) {
+        TenantId tenantId = new TenantId(aCommand.getTenantId());
+        
+        ProductOwner productOwner = this.productOwnerRepository.productOwnerOfIdentity(tenantId, aCommand.getUsername());
+        
+        if (productOwner != null) {
+            productOwner.enable(aCommand.getOccurredOn());
+        } else {
+            productOwner = new ProductOwner(
+                tenantId,
+                aCommand.getUsername(),
+                aCommand.getFirstName(),
+                aCommand.getLastName(),
+                aCommand.getEmailAddress(),
+                aCommand.getOccurredOn()
+            );
+            
+            this.prodcutOwnerRepository.add(productOwner);
+        }
+    }
+}
 ```
-
-
 
 ### 당신은 책임을 감당할 수 있는가
 
 ### 장기 실행 프로세스와 책임의 회피
+
+> 여기서 부터 발표 범
 
 ### 프로세스 상태 머신과 타임아웃 트래커
 
