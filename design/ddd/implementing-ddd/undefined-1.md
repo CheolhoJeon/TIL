@@ -685,9 +685,42 @@ public class ProductService {
                     + aCommand.getProductId());
         }
         
-//        DiscussionDescriptor.UNDEFIEND_ID -> 
-
+        //DiscussionDescriptor.UNDEFIEND_ID -> aCommand.getDiscussionId()
         product.initiateDiscussion(new DiscussionDescriptor(aCommand.getDiscussionId()));
+    }
+
+    // ...
+
+}
+```
+
+> 결국 <mark style="color:blue;">`Product`</mark>의 <mark style="color:blue;">`initiateDiscussion()`</mark> 메서드가 수행됨
+
+```java
+package com.saasovation.agilepm.model.product;
+
+public class Product extends ConcurrencySafeEnity {
+
+    // ...
+
+    public void initiateDiscussion(DiscussionDescriptor aDescriptor) {
+        if (aDescriptor == null) {
+            throw new IllegalArgumentException("The descriptor must not be null.");
+        }
+
+        if (this.discussion().availability().isRequested()) {
+            this.setDiscussion(this.discussion().nowReady(aDescriptor));
+
+            DomainEventPublisher
+                .instance()
+                .publish(
+                    new ProductDiscussionInitiated(
+                        this.tenantId(),
+                        this.productId(),
+                        this.discussion()
+                    )
+                );
+        }
     }
 
     // ...
@@ -697,13 +730,22 @@ public class ProductService {
 
 
 
+* <mark style="color:blue;">`Product`</mark>의 <mark style="color:blue;">`discussion`</mark> 속성이 여전히 <mark style="color:blue;">`REQUESTED`</mark> 상태라면, 협업 컨텍스트의 <mark style="color:blue;">`Discussion`</mark>의 ID를 참조하는 <mark style="color:blue;">`DiscussionDescriptor`</mark>와 함께 <mark style="color:blue;">`READY`</mark> 상태로 전환됨
+* 결과적으로 일관성을 만족하게 됨
+* 만약 <mark style="color:blue;">`initiateDiscussion()`</mark> 메서드가 호출된 시점에 이미 <mark style="color:blue;">`discussion`</mark> 필드가 <mark style="color:blue;">`READY`</mark> 상태였다면 어떻게 될까?
+  * 즉, 이미 <mark style="color:blue;">`DiscussionStarted`</mark> 이벤트를 수신한 이후에 해당 <mark style="color:blue;">`Product`</mark>에 대해 같은 이벤트가 중복되어 전달되었다는 의미임
+* <mark style="color:blue;">`initiateDiscussion()`</mark> 메서드는 멱등성을 만족하므로 문제를 일으키지 않는다.
+  * 즉, 이벤트가 여러번 전달되는 상황을 멱등성을 통해 해결하였음
+
+> 만약 장기 실행 프로세스가 메시징 메커니즘으로 인해 어떤 문제를 겪게 된다면 어떻게 될까?
+>
+> 프로세스가 끝까지 실행된다고 확신할 수 있을까?
+>
+> 다음 절에서 자세히 살펴보자
+
+### 프로세스 상태 머신과 타임아웃 트래커
 
 
-### 프로세스 상태 머신과 타임아웃 트래
-
-### 좀 더 복잡한 프로세스 설계하기
-
-### 메시징이나 시스템을 활용할 수 없을&#x20;
 
 ## 마무리
 
