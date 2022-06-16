@@ -500,14 +500,206 @@ public class Product extends ConcurrencySafeEnity {
 }
 ```
 
-> ProductCreated 이벤트와 ProductDiscussionRequested 이벤트를 처리하는 리스너를 살펴보자
+> <mark style="color:blue;">`ProductCreated`</mark> 이벤트와 <mark style="color:blue;">`ProductDiscussionRequested`</mark> 이벤트를 처리하는 리스너를 살펴보자
 
 ```java
+package com.saasovation.agilepm.infrastructure.messaging;
+
+public class ProductDiscussionRequestedListener extends ExchangeListener {
+    // ...
+
+    private static final String COMMAND = "com.saasovation.collaboration.discussion.CreateExclusiveDiscussion";
+
+    @Override
+    protected String exchangeName() {
+        return Exchanges.AGILEPM_EXCHANGE_NAME;
+    }
+
+    @Override
+    protected String [] listensToEvents() {
+        return new String[] {
+            "com.saasovation.agilepm.domain.model.product.ProductCreated",
+            "com.saasovation.agilepm.domain.model.product.ProductDiscussionRequested",
+        };
+    }
+
+    @Override
+    protected void filteredDispatch(String aType, String aTextMessage) {
+        NotificationReader reader = new NotificationReader(aTextMessage);
+
+        // requestingDiscussion의 값이 거짓이라면 이벤트 무시
+        // 그렇지 않은 경우, 이벤트의 상태로부터 CreateExclusiveDiscussion 커맨드를 만들어서 협업 컨텍스트의 메시지 익스체인지로 보냄
+        if (!reader.eventBooleanValue("requestingDiscussion")) {
+            return;
+        }
+
+        String tenantId = reader.eventStringValue("tenantId.id");
+        String productId = reader.eventStringValue("product.id");
+
+        productService.startDiscussionInitiation(
+            new StartDiscussionInitiationCommand(tenantId, productId)
+        );
+
+        // 협업 컨텍스트로 커맨드를 보낸다
+        Properties parameters = this.parametersFrom(reader);
+        PropertiesSerializer serializer = PropertiesSerializer.instance();
+
+        String serialization = serializer.serialize(parameters);
+        String commandId = this.commandIdFrom(parameters);
+
+        this.messageProducer()
+            .send(
+                serialization,
+                MessageParameters.durableTextParameters(
+                    COMMAND, commandId, new Date()
+                )
+            )
+            .close();
+    }
+
+    // ...
+}
+
 ```
 
 
 
-### 프로세스 상와 타임아웃 트래커
+p.619 후반에서 위의 두 이벤트를 로컬 리스너에서 처리하는 의문을 던지는데, 이후 이 의문에 대한 이유를 설명한다고 하였음
+
+차라리 이  논제를 후반부에 다루는 것이 나을 수도 있어 일단 지나
+
+
+
+> 이제 협업 컨텍스트의 <mark style="color:blue;">`ExclusiveDiscussionCreationListener`</mark>를 살펴보
+
+```java
+package com.saasovation.collaboration.infrastructure.messaging;
+
+public class ExclusiveDiscussionCreationListener extends ExchangeListener {
+
+    @Autowired
+    private ForumService forumService;
+    
+    // ...
+
+    @Override
+    protected void filteredDispatch(String aType, String aTextMessage) {
+        NotificationReader reader = new NotificationReader(aTextMessage);
+
+        String tenantId = reader.eventStringValue("tenantId");
+        String exclusiveOwnerId = reader.eventStringValue("exclusiveOwnerId");
+        String forumSubject = reader.eventStringValue("forumTitle");
+        String forumDescription = reader.eventStringValue("forumDescription");
+        String discussionSubject = reader.eventStringValue("discussionSubject");
+        String creatorId = reader.eventStringValue("creatorId");
+        String moderatorId = reader.eventStringValue("moderatorId");
+
+        // 관리 컨텍스트에서 전달된 커맨드를 수신하면 애플리케이션 서비스인 ForumSerivce를 호출
+        forumService.startExclusiveForumWithDiscussion(
+            tenantId,
+            creatorId,
+            moderatorId,
+            forumSubject,
+            forumDescription,
+            discussionSubject,
+            exclusiveOwnerId
+        );
+    }
+
+}
+
+```
+
+
+
+* <mark style="color:blue;">`ForumService`</mark>는 <mark style="color:blue;">`Discussion`</mark> 인스턴스를 생성하며, 생성된 인스턴스는 <mark style="color:blue;">`DiscussionStarted`</mark> 이벤트를 <mark style="color:blue;">`COLLABORATION_EXCHANGE`</mark>로 정의된 익스체인지를 통해 발생함
+* 이는 애자일 프로젝트 관리 컨텍스트 내의 <mark style="color:blue;">`DiscussionStartedListener`</mark>가 <mark style="color:blue;">`DiscussionStarted`</mark> 이벤트를 수신하는 이유
+
+> 아래의 예제는 리스너가 이벤트를 수신할 때 어떤 일을 하는지 보여준다
+
+```java
+package com.saasovation.agilepm.infrastructure.messaging;
+
+public class DiscussionStartedListener extends ExchangeListener {
+
+    @Autowired
+    private ProductService productService;
+
+    // ...
+    @Override
+    protected String exchangeName() {
+        return Exchanges.COLLABORATION_EXCHANGE_NAME;
+    }
+
+    @Override
+    protected String [] listensToEvents() {
+        return new String[] {
+            "com.saasovation.collaboration.domain.model.forum.DiscussionStarted"
+        };
+    }
+
+    @Override
+    protected void filteredDispatch(String aType, String aTextMessage) {
+        NotificationReader reader = new NotificatinoReader(aTextMessage);
+
+        String tenantId = reader.eventStringValue("tenant.id");
+        String productId = reader.eventStringValue("exclusiveOwner");
+        String discussionId = reader.eventStringValue("discussionId.id");
+
+        // 애플리케이션 서비스 호
+        productService.initiateDiscussion(
+            new InitiateDiscussionCommand(tenantId, productId, discussionId)
+        );
+    }
+
+    // ...
+}
+
+```
+
+> <mark style="color:blue;">`initiateDiscussion()`</mark> 메서드는 다음과 같이 동작한다.
+
+```java
+package com.saasovation.agilepm.application;
+
+@Service
+public class ProductService {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    // ...
+
+    @Transactional
+    public void initiateDiscussion(InitiateDiscussionCommand aCommand) {
+        Product product = productRepository.productOfId(
+                new TenantId(aCommand.getTenantId()),
+                new ProductId(aCommand.getProductId())
+        );
+
+        if (product == null) {
+            throw new IllegalStateException(
+                    "Unknown product of tenant id: "
+                    + aCommand.getTenantId()
+                    + "and product id: "
+                    + aCommand.getProductId());
+        }
+        
+//        DiscussionDescriptor.UNDEFIEND_ID -> 
+
+        product.initiateDiscussion(new DiscussionDescriptor(aCommand.getDiscussionId()));
+    }
+
+    // ...
+
+}
+```
+
+
+
+
+
+### 프로세스 상태 머신과 타임아웃 트래
 
 ### 좀 더 복잡한 프로세스 설계하기
 
