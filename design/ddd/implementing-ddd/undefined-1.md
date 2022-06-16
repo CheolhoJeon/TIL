@@ -338,7 +338,7 @@ public class TeamService ... {
 
 ### 장기 실행 프로세스와 책임의 회피
 
-{% file src="../../../.gitbook/assets/DDD_13.drawio" %}
+{% file src="../../../.gitbook/assets/DDD_13-3.drawio" %}
 
 > 이번 절에서는 여러 바운디드 컨텍스트에 걸쳐 실행되는 장기 실행 프로세스를 메시징을 통해 어떻게 연계하는지 살펴본다
 
@@ -349,11 +349,13 @@ public class TeamService ... {
   * 사용자는 정의된 제품을 만들도록 요청한다.
   * 시스템은 포럼과 토론이 들어간 제품을 만든다.
 
-![애자일 관리 컨텍스트(Agile PM)과 협업 컨텍스트(Collaboration)이 존재한다](../../../.gitbook/assets/DDD\_13.drawio.png)
+
+
+![애자일 관리 컨텍스트(Agile PM)과 협업 컨텍스트(Collaboration)이 존재한다](../../../.gitbook/assets/DDD\_13.drawio-2.png)
 
 
 
-> 먼저 Product를 만드는데 사용된 애플리케이션 서비스를 살펴보자
+> 먼저 <mark style="color:blue;">`Product`</mark>를 만드는데 사용된 애플리케이션 서비스를 살펴보자
 
 ```java
 package com.saasovation.agilepm.application;
@@ -532,13 +534,6 @@ public class ProductDiscussionRequestedListener extends ExchangeListener {
         if (!reader.eventBooleanValue("requestingDiscussion")) {
             return;
         }
-
-        String tenantId = reader.eventStringValue("tenantId.id");
-        String productId = reader.eventStringValue("product.id");
-
-        productService.startDiscussionInitiation(
-            new StartDiscussionInitiationCommand(tenantId, productId)
-        );
 
         // 협업 컨텍스트로 커맨드를 보낸다
         Properties parameters = this.parametersFrom(reader);
@@ -744,6 +739,91 @@ public class Product extends ConcurrencySafeEnity {
 > 다음 절에서 자세히 살펴보자
 
 ### 프로세스 상태 머신과 타임아웃 트래커
+
+> 해당 절에서는 <mark style="color:blue;">**프로세스 트래커(Process Tracker)**</mark>라는 개념을 추가함으로써 장기 실행 프로세스를 더욱 성숙하게 만들어 본다
+
+* 사스오베이션 개발자는 <mark style="color:blue;">`TimeContrainedProcessTracker`</mark>라고 이름 지은 개념을 만듬
+* 트래커는 완료까지 부여된 시간이 만료된 프로세스를 감시하는데, 이런 프로세스는 만료되기 전에는 몇 번이고 재시도 될 수 있음
+* 트래커는 원하는 경우 고정된 시간 간격을 두고 재시도하도록 설계할 수 있고, 재시도를 전혀 하지 않거나 정해진 횟수만큼을 재시도한 후에 타임아웃을 발생시키도록 할수도 있음
+
+
+
+* 프로세스의 현재 상태를 가지고 있는 것은 <mark style="color:blue;">`Product`</mark>이며, 컨텍스트는 아래의 조건이 만족되면 <mark style="color:blue;">`ProductDiscussionRequestTimedOut`</mark> 이벤트를 발행함
+  * 재시도 타임에 도달함
+  * 프로세스가 완전히 타임아웃됨
+
+```java
+package com.saasovation.agilepm.model.product;
+
+public class ProductDiscussionRequestTimedOut extends ProcessTimedOut {
+
+    public ProductDiscussionRequestTimedOut(
+        String aTenantId,
+        ProcessId aProcessId,
+        int aTotalRetriesPermitted,
+        int aRetryCount
+    ) {
+        super(aTenantId, aProcessId, aTotalRetriesPermitted, aRetryCount);
+    }
+
+}
+```
+
+
+
+* 재시도와 타임아웃에 관련된 알림을 수신할 수 있는 능력으로 무장한 <mark style="color:blue;">`Product`</mark>는 보다 개선된 프로세스에 참여할 수 있음
+* 우선 기존과 동일하게 <mark style="color:blue;">`ProductDiscussionRequestedListerner`</mark>를 통해 프로세스를 시작하며, 리스너는 <mark style="color:blue;">`ProductService`</mark>의 <mark style="color:blue;">`startDiscussionInitiation()`</mark> 메서드를 호출함
+
+```java
+package com.saasovation.agilepm.application;
+
+@Service
+public class ProductService {
+
+    // ...
+
+    @Transactional
+    public void startDiscussionInitiation(StartDiscussionInitiationCommand aCommand) {
+        Product product = productRepository.productOfId(
+            new TenantId(aCommand.getTenantId()),
+            new ProductId(aCommand.getProductId())
+        );
+
+        if (product == null) {
+            throw new IllegalStateException(
+                "Unknown product of tenant id: "
+                + aCommand.getTenantId()
+                + "and product id: "
+                + aCommand.getProductId());
+        }
+
+        String timedOutEventName = ProductDiscussionRequestTimedOut.class.getName();
+
+        // 프로세스 트래커 생성
+        TimeConstrainedProcessTracker tracker = new TimeConstrainedProcessTracker(
+            product.tenantId().id(),
+            ProcessId.newProcessId(),
+            "Create discussion for product: " + product.name(),
+            new Date(),
+            5L * 60L * 1000L, // 5분 마다 재시도한다
+            3, // 총 3회 재시도한다
+            timedOutEventName
+        );
+
+        // 트래커를 영속화시킴
+        processTrackerRepository.add(tracker);
+
+        product.setDiscussionInitiationId(tracker.processId().id());
+    }
+
+    // ...
+
+}
+```
+
+
+
+
 
 
 
