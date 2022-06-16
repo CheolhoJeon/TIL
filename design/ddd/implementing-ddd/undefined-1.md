@@ -349,13 +349,165 @@ public class TeamService ... {
   * 사용자는 정의된 제품을 만들도록 요청한다.
   * 시스템은 포럼과 토론이 들어간 제품을 만든다.
 
-![](../../../.gitbook/assets/DDD\_13.drawio.png)
+![애자일 관리 컨텍스트(Agile PM)과 협업 컨텍스트(Collaboration)이 존재한다](../../../.gitbook/assets/DDD\_13.drawio.png)
 
 
 
+> 먼저 Product를 만드는데 사용된 애플리케이션 서비스를 살펴보자
+
+```java
+package com.saasovation.agilepm.application;
+
+@Service
+public class ProductService {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private ProductOwnerRepository productOwnerRepository;
+
+    //...
+
+    @Transactional
+    public String newProductWithDiscussion(NewProductCommand aCommand) {
+        // Product 생성자를 호출
+        return this.newProductWith(
+                aCommand.getTenantId(),
+                aCommand.getProductOwnerId(),
+                aCommand.getName(),
+                aCommand.getDescription(),
+                this.requestDiscussionIfAvailable()
+        );
+    }
+
+    // ...
+
+}
+```
+
+> newProductWith()은 Product의 생성자를 호출한다
+
+```java
+package com.saasovation.agilepm.model.product;
+
+public class Product extends ConcurrencySafeEnity {
+
+    // ...
+
+    // ProductService.newProductWith()에 의해 호출되며
+    // 협업 옵션이 사전에 구입되었다면, DiscussionAvailability.REQUESTED가 전달됨
+    public Product(
+        TenantId aTenantId,
+        ProductId aProductId,
+        ProductOwnerId aProductOwnerId,
+        String aName,
+        String aDescription,
+        // READY, ADD_ON_NOT_ENABLED, NOT_REQUESTED, REQUESTED
+        DiscussionAvailability aDiscussionAvailability
+    ) {
+        this();
+
+        this.setTenantId(aTenantId);
+        this.setProdctId(aProductId);
+        this.setProductOwnerId(aProductOwnerId);
+        this.setName(aName);
+        this.setDescription(aDescription);
+
+        this.setDiscussion(ProductDiscussion.fromAvailability(aDiscussionAvailability));
+
+        // 도메인 이벤트를 발행
+        DomainEventPublisher
+            .instance()
+            .publish(new ProductCreated(
+               this.tenantId(),
+               this.productId(),
+               this.productOwnerId(),
+               this.name(),
+               this.description(),
+               // True이면 장기 실행 프로세스 시작
+               // 단, false라고 해서 이벤트가 발행되지 않는 것이 아님
+               // false이면 이벤트가 무시될 뿐임
+               this.discussion.availability().isRequested()
+            ));
+    }
+
+    // ...
+
+}
+```
+
+> 다음은 Product 생성자에서 호출하는 ProductDiscussion 팩토리 메서드이다
+
+```java
+package com.saasovation.agilepm.model.product;
+
+public class ProductDiscussion implements Serializable {
+
+    // ...
+
+    public static ProductDiscussion fromAvailability(DiscussionAvailablity anAvailability) {
+        if (anAvailability.isReady()) {
+            throw new IllegalArgumentException("Cannot be created ready.");
+        }
+
+        DiscussionDecriptor descriptor = new DiscussionDescriptor(
+            DiscussionDescriptor(DiscussionDescriptor.UNDEFIEND_ID)
+        );
+
+        return new ProductDiscussion(descriptor, anAvailability);
+    }
+
+    // ...
+
+}
+
+```
+
+> 앞에서는 제품 생성과 함께 토론이 요청되는 케이스를 살펴보았음\
+> 여기서는 제품이 기존에 생성된 상태에서 토론을 요청하는 케이스를 살펴보자
+
+```java
+package com.saasovation.agilepm.model.product;
+
+public class Product extends ConcurrencySafeEnity {
+
+    // ...
+
+    // Product만 생성된 후에, 따로 토론을 요청할 때 호
+    public void requestDiscussion(DiscussionAvailability aDiscussionAvailability) {
+        if (!this.discussion().availability().isReady()) {
+            this.setDiscussion(ProductDiscussion.fromAvailability(aDiscussionAvailability));
+        }
+
+        DomainEventPublisher
+            .instance()
+            // ProductDiscussionRequested는 ProductCreated와 동일한 속성을 가지며,
+            // 두 이벤트 모두 장기 실행 프로세스의 트리거로서 활용됨
+            .publish(new ProductDiscussionRequested(
+                this.tenantId(),
+                this.productId(),
+                this.productOwnerId(),
+                this.name(),
+                this.description(),
+                // 마찬가지로, True이면 장기 실행 프로세스 시작
+                this.discussion.availability().isRequested()
+            ));
+    }
+
+    // ...
+
+}
+```
+
+> ProductCreated 이벤트와 ProductDiscussionRequested 이벤트를 처리하는 리스너를 살펴보자
+
+```java
+```
 
 
-### 프로세스 상태 머신과 타임아웃 트래커
+
+### 프로세스 상와 타임아웃 트래커
 
 ### 좀 더 복잡한 프로세스 설계하기
 
