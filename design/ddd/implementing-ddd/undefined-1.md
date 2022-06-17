@@ -1042,6 +1042,80 @@ public class ProductService {
 
 
 
+* 나름 만족스러운 결과이지만, 이 설계에는 약간의 문제가 남아있음
+* 이런 방법을 사용해 Product 토론을 생성하는 요청을 재시도할 때, 현재 협업 컨텍스트는 중복된 이벤트에 대한 처리가 고려되어 있지 않음
+* 우리는 이미 ProductService.initiateDiscussion()를 멱등하게 설계함으로써, 비슷한 문제를 해결하였음
+* 마찬가지로 ForumSerivce의 startExclusiveForumWithDiscussion() 메서드를 멱등하게 설계하여 중복된 이벤트 문제를 해결해볼 것임
+
+```java
+package com.saasovation.collaboration.application;
+
+public class ForumService {
+
+    // ...
+
+    @Transactional
+    public Discussion startExclusiveForumWithDiscussion(
+        String aTenantId,
+        String aCreatorId,
+        String aModeratorId,
+        String aForumSubject,
+        String aForumDescription,
+        String aDiscussionSubject,
+        String anExclusiveOwner
+    ) {
+        Tenant tenant = new Tenant(aTenantId);
+
+        Forum forum = forumRepository.exclusiveForumOfOwner(tenant, anExclusiveOwner);
+
+        // 멱등성을 위한 코드
+        if (forum == null) {
+            forum = this.startForum(
+                tenant,
+                aCreatorId,
+                aModeratorId,
+                aForumSubject,
+                aForumDescription,
+                anExclusiveOwner
+            );
+        }
+
+        Discussion discussion = discussionRepository.exclusiveDiscussionOfOwner(tenant, anExclusiveOwner);
+
+        // 멱등성을 위한 코드
+        if (discussion == null) {
+            Author author = collaboratorService.authorFrom(tenant, aModeratorId);
+
+            discussion = forum.startDiscussion(
+                forumNavigationService,
+                    author,
+                    aDiscussionSubject
+            );
+
+            discussionRepository.add(discussion);
+        }
+
+        return discussion;
+    }
+
+    // ...
+
+}
+```
+
+### 메시징이나 시스템을 활용할 수 없을 때
+
+* 복잡한 소프트웨어 시스템을 개발하는 데 있어서 어떤 접근법이라 해도 만병통치약이 될 수는 없음
+* 모든 접근법에는 나름의 쟁점과 단점이 있음
+* 메시징 시스템의 한 가지 문제점은 일정 기간 동안 사용이 불가능할 수 있다는 점임
+
+
+
+* 메시징 메커니즘이 일정 기간 동안 오프라인이라면, 알림 발행자는 메시지를 보낼 수 없음
+* 그렇다면 메시징 시스템이 다시 사용 가능할 때까지 알림 발송 시도를 잠시 미루는 편이 최선일 수 있음
+* 하나의 발송 건만 성공해도 사용가능한 상태가 됐음을 알아차릴 수 있는데, 그 전까지는 발송 횟수를 줄이는 것이 바람직함
+* 만약 개발하는 시스템이 이벤트 저장소를 포함하고 있다면, 저장소에 저장된 이벤트를 메시징이 다시 가능해졌을 때 이를 발송할 수 있다는 점을 기억하자
+
 
 
 ## 마무리
