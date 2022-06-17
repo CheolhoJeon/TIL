@@ -828,7 +828,7 @@ public class ProductService {
 
 
 * 프로세스의 경과 시간을 확인하기 위해 백그라운드 타이머가 정기적으로 활성화됨
-* 이 타이머는 ProcessService의 메소드인 checkForTimedOutProcess()로 작업을 위임함
+* 이 타이머는 <mark style="color:blue;">`ProcessService`</mark>의 메소드인 <mark style="color:blue;">`checkForTimedOutProcess()`</mark>로 작업을 위임함
 
 ```java
 package com.saasovation.agilepm.application;
@@ -998,7 +998,7 @@ public class ProductService {
 }
 ```
 
-> 기존과 동일하게 협업 컨텍스에서 Discussion이 생성되면, 결과적으로 ProductService의 initiatationDiscussion() 메서드가 실행되는데 여기에는 새로운 행동이 추가된다.
+> 기존과 동일하게 협업 컨텍스에서 <mark style="color:blue;">`Discussion`</mark>이 생성되면, 결과적으로 <mark style="color:blue;">`ProductService`</mark>의 <mark style="color:blue;">`initiatationDiscussion()`</mark> 메서드가 실행되는데 여기에는 새로운 행동이 추가된다.
 
 ```java
 package com.saasovation.agilepm.application;
@@ -1041,9 +1041,9 @@ public class ProductService {
 
 
 * 나름 만족스러운 결과이지만, 이 설계에는 약간의 문제가 남아있음
-* 이런 방법을 사용해 Product 토론을 생성하는 요청을 재시도할 때, 현재 협업 컨텍스트는 중복된 이벤트에 대한 처리가 고려되어 있지 않음
-* 우리는 이미 ProductService.initiateDiscussion()를 멱등하게 설계함으로써, 비슷한 문제를 해결하였음
-* 마찬가지로 ForumSerivce의 startExclusiveForumWithDiscussion() 메서드를 멱등하게 설계하여 중복된 이벤트 문제를 해결해볼 것임
+* 이런 방법을 사용해 <mark style="color:blue;">`Product`</mark>의 토론을 생성하는 요청을 재시도할 때, 현재 협업 컨텍스트는 중복된 이벤트에 대한 처리가 고려되어 있지 않음
+* 우리는 이미 <mark style="color:blue;">`ProductService.initiateDiscussion()`</mark>를 멱등하게 설계함으로써, 비슷한 문제를 해결하였음
+* 마찬가지로 <mark style="color:blue;">`ForumSerivce`</mark>의 <mark style="color:blue;">`startExclusiveForumWithDiscussion()`</mark> 메서드를 멱등하게 설계하여 중복된 이벤트 문제를 해결해볼 것임
 
 ```java
 package com.saasovation.collaboration.application;
