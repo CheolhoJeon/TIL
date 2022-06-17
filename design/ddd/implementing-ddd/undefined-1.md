@@ -559,12 +559,6 @@ public class ProductDiscussionRequestedListener extends ExchangeListener {
 
 
 
-p.619 후반에서 위의 두 이벤트를 로컬 리스너에서 처리하는 의문을 던지는데, 이후 이 의문에 대한 이유를 설명한다고 하였음
-
-차라리 이  논제를 후반부에 다루는 것이 나을 수도 있어 일단 지나
-
-
-
 > 이제 협업 컨텍스트의 <mark style="color:blue;">`ExclusiveDiscussionCreationListener`</mark>를 살펴보
 
 ```java
@@ -680,7 +674,7 @@ public class ProductService {
                     + aCommand.getProductId());
         }
         
-        //DiscussionDescriptor.UNDEFIEND_ID -> aCommand.getDiscussionId()
+        // DiscussionDescriptor.UNDEFIEND_ID -> aCommand.getDiscussionId()
         product.initiateDiscussion(new DiscussionDescriptor(aCommand.getDiscussionId()));
     }
 
