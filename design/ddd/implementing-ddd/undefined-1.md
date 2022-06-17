@@ -823,9 +823,228 @@ public class ProductService {
 
 
 
+* 이 즈음에서 <mark style="color:blue;">`ProductCreated`</mark> 이벤트가 협업 컨텍스트에서 해석되도록 하지 않고 로컬에서 처리한 이유을 생각해보자
+  * <mark style="color:blue;">`CreateExclusiveDiscussion`</mark> 커맨드를 협업 컨텍스트로 전달할 것이 아니라 <mark style="color:blue;">`ProductCreated`</mark> 이벤트를 바로 전달해도 되지 않았을 것 아닌가?
+* 하지만 <mark style="color:blue;">`ProductCreated`</mark> 이벤트를 로컬에서 처리한 이유는 바로 <mark style="color:blue;">`Product`</mark>를 위한 트래커를 생성하는 이 접근법 때문임
+
+
+
+* 프로세스의 경과 시간을 확인하기 위해 백그라운드 타이머가 정기적으로 활성화됨
+* 이 타이머는 ProcessService의 메소드인 checkForTimedOutProcess()로 작업을 위임함
+
+```java
+package com.saasovation.agilepm.application;
+
+@Service
+public class ProductService {
+
+    //...
+
+    @Transactional
+    public void checkForTimedOutProcesses() {
+        Collection<TimeConstrainedProcessTracker> trackers = processTrackerRepository.allTimedOut();
+
+        for (TimeConstrainedProcessTracker tracker : trackers) {
+            // 프로세스의 재시도나 타임아웃이 필요한지 여부를 확인하고, 만약 확인된 경우에는 ProcessTimedOut의 서브클래스를 발행함
+            tracker.informationProcessTimedOut();
+        }
+    }
+
+    // ...
+
+}
+```
+
+
+
+> 이어서 재시도와 타임아웃을 처리하는 <mark style="color:blue;">`ProductDiscussionRetryListener`</mark>를 살펴보자
+
+```java
+package com.saasovation.agilepm.infrastructure.messaging;
+
+public class ProductDiscussionRetryListener extends ExchangeListener {
+    // ...
+
+    @Autowired
+    private ProcessService processService;
+
+    // ...
+
+    @Override
+    protected String exchangeName() {
+        return Exchanges.AGILEPM_EXCHANGE_NAME;
+    }
+
+    @Override
+    protected String [] listensToEvents() {
+        return new String[] {
+            "com.saasovation.agilepm.domain.model.product.ProductDiscussionRequestTimedOut",
+        };
+    }
+
+    @Override
+    protected void filteredDispatch(String aType, String aTextMessage) {
+        Notification notification = NotificationSerializer.instance().deserialize(aTextMessage, Notification.class);
+
+        ProductDiscussionRequestTimedOut event = notification.event();
+
+        // 완전히 타임아웃되었는가?
+        if (event.hasFullyTimedOut()) {
+            // 타임아웃 시 처리해야할 로직 요청
+            productService.timeOutProductDiscussionRequest(
+                new TimeOutProductDiscussionRequestCommand(
+                    event.tenantId(),
+                    event.processId().id(),
+                    event.occurredOn()
+                )
+            );
+        } else {
+            // 재시도에 필요한 로직 요
+            productService.retryProductDiscussionRequest(
+                new RetryProductDiscussionRequestCommand(
+                    event.tenantId(),
+                    event.processId().id()
+                )
+            );
+        }
+    }
+
+    // ...
+}
+```
+
+
+
+> 먼저 완전한 타임아웃이 발생했을 때의 처리 로직을 살펴보자
+
+```java
+package com.saasovation.agilepm.application;
+
+@Service
+public class ProductService {
+
+    //...
+
+    @Transactional
+    public void timeOutProductDiscussionRequest(TimeOutProductDiscussionRequestCommand aCommand) {
+        ProcessId processId = ProcessId.existingProcessId(aCommand.getProcessId());
+
+        TenantId tenantId = new TenantId(aCommand.getTenantId());
+
+        Product product = productRepository.productOfDiscussionInitiationId(tenantId, processId);
+
+        // 실패 메일 전송
+        this.sendEmailForTimedOutProcess(product);
+
+        // Discussion 생성 실패에 따른 Product의 적절한 상태를 가질 수 있도록 메서드 호출
+        product.failDiscussionInitiation();
+    }
+
+    // ...
+
+}
+```
+
+```java
+package com.saasovation.agilepm.model.product;
+
+public class Product extends ConcurrencySafeEnity {
+
+    // ...
+
+    public void failDiscussionInitiation() {
+        if (!this.discussion().availability().isReady()) {
+            this.setDiscussionInitiationId(null);
+
+            this.setDiscussion(ProductDiscussion.fromAvailability(DiscussionAvailability.FAILED));
+        }
+    }
+
+    // ...
+
+}
+```
+
+> 이제 재시도가 필요한 상황에서 실행되는 로직을 살펴보자
+
+```java
+package com.saasovation.agilepm.application;
+
+@Service
+public class ProductService {
+
+    //...
+
+    @Transactional
+    public void retryProductDiscussionRequest(RetryProductDiscussionRequestCommand aCommand) {
+        ProcessId processId = ProcessId.existingProcessId(aCommand.getProcessId());
+
+        TenantId tenantId = new TenantId(aCommand.getTenantId());
+
+        Product product = productRepository.productOfDiscussionInitiationId(tenantId, processId);
+
+        if (product == null) {
+            throw new IllegalStateException(
+                "Unknown product of tenant id: "
+                + aCommand.getTenantId()
+                + "and product id: "
+                + aCommand.getProductId());
+        }
+
+        // ProductDiscussionRequested 이벤트를 다시 발
+        this.requestProductDiscussion(new RequestProductDiscussionCommand(aCommand.getTenantId(), product.productId().id()));
+    }
+
+    // ...
+
+}
+```
+
+> 기존과 동일하게 협업 컨텍스에서 Discussion이 생성되면, 결과적으로 ProductService의 initiatationDiscussion() 메서드가 실행되는데 여기에는 새로운 행동이 추가된다.
+
+```java
+package com.saasovation.agilepm.application;
+
+@Service
+public class ProductService {
+
+    //...
+
+    @Transactional
+    public void initiateDiscussion(InitiateDiscussionCommand aCommand) {
+        Product product = productRepository.productOfId(
+                new TenantId(aCommand.getTenantId()),
+                new ProductId(aCommand.getProductId())
+        );
+
+        if (product == null) {
+            throw new IllegalStateException(
+                "Unknown product of tenant id: "
+                + aCommand.getTenantId()
+                + "and product id: "
+                + aCommand.getProductId());
+        }
+
+        product.initiateDiscussion(new DiscussionDescriptor(aCommand.getDiscussionId()));
+
+        /* 트래커를 읽어와 완료 처리하는 로직이 추가 */
+        timeContrainedProcessTracker tracker =
+                this.processTrackerRepository.trackerOfProcessId(ProcessId.existingProcessId(product.discussionInitiationId()));
+
+        // 이 시점 이후론 재시도나 타임아웃을 알리기 위해 트래커를 사용하지 않음. 프로세스는 끝남
+        tracker.completed();
+    }
+
+    // ...
+
+}
+```
+
 
 
 
 
 ## 마무리
+
+
 
