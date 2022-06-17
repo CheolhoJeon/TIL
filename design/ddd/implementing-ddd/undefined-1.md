@@ -338,8 +338,6 @@ public class TeamService ... {
 
 ### 장기 실행 프로세스와 책임의 회피
 
-{% file src="../../../.gitbook/assets/DDD_13-3.drawio" %}
-
 > 이번 절에서는 여러 바운디드 컨텍스트에 걸쳐 실행되는 장기 실행 프로세스를 메시징을 통해 어떻게 연계하는지 살펴본다
 
 * 예제에서는 제품을 생성하는 유스케이스를 살펴볼 것임
@@ -351,7 +349,7 @@ public class TeamService ... {
 
 
 
-![애자일 관리 컨텍스트(Agile PM)과 협업 컨텍스트(Collaboration)이 존재한다](../../../.gitbook/assets/DDD\_13.drawio-2.png)
+![애자일 관리 컨텍스트(Agile PM) 협업 컨텍스트(Collaboration)이 존재한다](../../../.gitbook/assets/DDD\_13.drawio-2.png)
 
 
 
@@ -371,6 +369,7 @@ public class ProductService {
 
     //...
 
+    // 제품(Product) 생성과 동시에 토론(Discussion)을 '함께' 요청하는 오퍼레이션
     @Transactional
     public String newProductWithDiscussion(NewProductCommand aCommand) {
         // Product 생성자를 호출
@@ -379,6 +378,7 @@ public class ProductService {
                 aCommand.getProductOwnerId(),
                 aCommand.getName(),
                 aCommand.getDescription(),
+                // 토론 생성이 가능한지에 대한 여부를 나타내는 프로퍼티를 반환
                 this.requestDiscussionIfAvailable()
         );
     }
@@ -388,7 +388,7 @@ public class ProductService {
 }
 ```
 
-> newProductWith()은 Product의 생성자를 호출한다
+> <mark style="color:blue;">`newProductWith()`</mark>은 <mark style="color:blue;">`Product`</mark>의 생성자를 호출한다
 
 ```java
 package com.saasovation.agilepm.model.product;
@@ -439,7 +439,7 @@ public class Product extends ConcurrencySafeEnity {
 }
 ```
 
-> 다음은 Product 생성자에서 호출하는 ProductDiscussion 팩토리 메서드이다
+> 다음은 <mark style="color:blue;">`Product`</mark> 생성자에서 호출하는 <mark style="color:blue;">`ProductDiscussion`</mark> 팩토리 메서드이다
 
 ```java
 package com.saasovation.agilepm.model.product;
@@ -741,6 +741,10 @@ public class Product extends ConcurrencySafeEnity {
 ### 프로세스 상태 머신과 타임아웃 트래커
 
 > 해당 절에서는 <mark style="color:blue;">**프로세스 트래커(Process Tracker)**</mark>라는 개념을 추가함으로써 장기 실행 프로세스를 더욱 성숙하게 만들어 본다
+
+![프로세스 트래커 개념을 추가한 장기 실패 프로세스의 흐름도](../../../.gitbook/assets/DDD\_13\_V2.drawio.png)
+
+
 
 * 사스오베이션 개발자는 <mark style="color:blue;">`TimeContrainedProcessTracker`</mark>라고 이름 지은 개념을 만듬
 * 트래커는 완료까지 부여된 시간이 만료된 프로세스를 감시하는데, 이런 프로세스는 만료되기 전에는 몇 번이고 재시도 될 수 있음
@@ -1118,7 +1122,6 @@ public class ForumService {
 
 
 
-## 마무리
+**Materials**
 
-
-
+{% file src="../../../.gitbook/assets/DDD_13_V2-2 (3).drawio" %}
