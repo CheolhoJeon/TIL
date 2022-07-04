@@ -23,7 +23,18 @@
 
 나중에 다시 기술
 
-## 역
+## 역할
+
+## 트랜잭션 매니저
+
+
+
+* AOP와 트랜잭션 메타데이터의 조합은 적절한 TransactionManager 구현과 함께 TransactionInterceptor를 사용하여 메서드 호출을 중심으로 트랜잭션을 구동하는 AOP 프록시를 생성합니다.
+
+
+
+* TransactionManager
+* TransactionStatus
 
 
 
