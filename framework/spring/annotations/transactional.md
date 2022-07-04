@@ -33,8 +33,31 @@
 
 
 
+```java
+public interface PlatformTransactionManager extends TransactionManager {
+
+    TransactionStatus getTransaction(TransactionDefinition definition) throws TransactionException;
+
+    void commit(TransactionStatus status) throws TransactionException;
+
+    void rollback(TransactionStatus status) throws TransactionException;
+}
+```
+
 * TransactionManager
+  * 트랜잭션 매니저임을 의미하는 마커(Marker) 인터페이스
+* [PlatformTransactionManager](https://docs.spring.io/spring-framework/docs/current/reference/html/data-access.html#transaction-strategies)
+  * 트랜잭션 관리를 위한 오퍼레이션의 집합을 제공하는 인터페이스
 * TransactionStatus
+  * 트랜잭션의 상태를 나타냄
+* TransactionException
+  * PlatformTransactionManager의 모든 오퍼레이션을 통해 던져질 수 있는 익셉션의 상위 타
+* TransactionDefinition
+  * 스프링의 트랜잭션 관련 프로퍼티를 정의하는 인터페이
+  * Propagation:&#x20;
+  * isolation:&#x20;
+  * Timeout:&#x20;
+  * Read-only status:&#x20;
 
 
 
