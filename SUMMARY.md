@@ -51,6 +51,9 @@
     * [var & val, Data Types](language/kotlin/basics/var-and-val-data-types.md)
     * [Functions](language/kotlin/basics/functions.md)
     * [Boolean](language/kotlin/basics/boolean.md)
+  * [Effective Kotlin](language/kotlin/effective-kotlin/README.md)
+    * [가독성](language/kotlin/effective-kotlin/undefined/README.md)
+      * [Item 16: 프로퍼티는 동작이 아니라 상태를 나타내야한다](language/kotlin/effective-kotlin/undefined/item-16.md)
 
 ## Design
 
