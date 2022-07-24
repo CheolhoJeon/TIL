@@ -83,3 +83,27 @@ public interface PlatformTransactionManager extends TransactionManager {
 
 ### 스프링 트랜잭션 사용 방식
 
+<mark style="color:blue;">`PlatformTransactionManager`</mark>를 사용하는 방법은 크게 2가지가 있다.
+
+#### 선언적 트랜잭션 vs 프로그래밍 방식 트랜잭션 관리
+
+* <mark style="color:blue;">**선언적 트랜잭션 관리(Declarative Transaction Management)**</mark>
+  * <mark style="color:blue;">`@Transactional`</mark> 애노테이션 하나만 선언해서 매우 편리하게 트랜잭션을 적용하는 것은 선언적 트랜잭션 관리라 한다.
+  * 선언적 트랜잭션 관리는 과거 XML에 설정하기도 했다.
+  * 이름 그대로 해당 로직에 트랜잭션을 적용하겠다 라고 어딘가에 선언하기만 하면 트랜잭션이 적용되는 방식이다.
+* <mark style="color:blue;">**프로그래밍 방식의 트랜잭션 관리(Programmatic Transaction Management)**</mark>
+  * 트잭션 매니저 또는 트랜잭션 템플릿 등을 사용해서 트랜잭션 관련 코드를 직접 작성하는 것을 프로그래밍 방식의 트랜잭션 관리라 한다.
+
+
+
+* **프로그래밍 방식의 트랜잭션 관리를 사용하게 되면, 애플리케이션 코드가 트랜잭션이라는 기술 코드와 강하게 결합된다.**
+* 선언적 트랜잭션 관리가 프로그래밍 방식에 비해서 훨씬 간결하고 실용적이기 때문에 <mark style="color:blue;">**실무에서는 대부분 선언적 트랜잭션 관리를 사용한다**</mark>
+
+### 선언적 트랜잭션과 AOP
+
+<mark style="color:blue;">`@Transactional`</mark>을 통한 선언적 트랜잭션 관리 방식을 사용하게 되면 기적으로 프록시 방식의 AOP가 적용된다.&#x20;
+
+#### 프록시 도입 전
+
+
+
