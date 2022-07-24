@@ -71,7 +71,7 @@ public interface PlatformTransactionManager extends TransactionManager {
 
 * 트랜잭션은 트랜잭션 시작(획득), 커밋, 롤백으로 단순하게 추상화할 수 있다.
 
-![](<../../../../.gitbook/assets/image (6).png>)
+![](<../../../../.gitbook/assets/image (12).png>)
 
 * <mark style="color:blue;">**스링은 트랜잭션을 추상화해서 제공할 뿐만 아니라**</mark>, 실무에서 주로 사용하는 데이터 접근 기술에 대한 <mark style="color:blue;">**트랜잭션 매니저의 구현체도 제공**</mark>한다.&#x20;
 * 여기에 더해서 스프링 부트는 어떤 데이터 접근 기술을 사용하는지 자동으로 인식해서 적절한 트랜잭션 매니저를 선택해서 스프링 빈으로 등록해주기 때문에 트랜잭션 매니저를 선택하고 등록하는 과정도 생략할 수 있다.\
@@ -111,7 +111,7 @@ public interface PlatformTransactionManager extends TransactionManager {
 
 #### 서비스 계층의 트랜잭션 사용 코드 예
 
-![](<../../../../.gitbook/assets/image (5).png>)
+![](<../../../../.gitbook/assets/image (9).png>)
 
 #### 프록시 도입 후
 
@@ -125,7 +125,7 @@ public interface PlatformTransactionManager extends TransactionManager {
 
 #### 트랜잭션 프록시 적용 후 서비스 코드 예시
 
-![](<../../../../.gitbook/assets/image (7).png>)
+![](<../../../../.gitbook/assets/image (16).png>)
 
 * 프록시 도입 전: 서비스에 비즈니스 로직과 트랜잭션 처리 로직이 함께 섞여있다.
 * 프록시 도입 후: <mark style="color:blue;">**트랜잭션 프록시가 트랜잭션 처리 로직을 모두 가져간다. 그리고 트랜잭션을 시작한 후에 실제 서비스를 대신 호출한다.**</mark> 트랜잭션 프록시 덕분에 서비스 계층에는 순수한 비즈니스 로직만 남길 수 있다.
@@ -154,15 +154,140 @@ org.springframework.transaction.annotation.Transactional
 
 스프링 트랜잭션이 실제 적용되고 있는지 확인하는 방법을 알아보자.
 
-<details>
-
-<summary>TxApplyBasicTest</summary>
-
-
-
-</details>
-
-####
+#### TxApplyBasicTest
 
 {% embed url="https://gist.github.com/9d9ced16d4cd9b4cf19178c8a3d50321" %}
+
+#### proxyCheck() - 실행
+
+* <mark style="color:blue;">`AoPUtils.isAopProxy()`</mark>: 선언적 트랜잭션 방식에서 스프링 트랜잭션은 AOP를 기반으로 동작한다. @Transactional을 메서드나 클래스에 붙면 해당 객체는 트랜잭션 AOP 적용의 대상이 되고, 결과적으로 실제 객체 대신에 트랜잭션을 처리해주는 프록시 객체가 스프링 빈에 등록된다. <mark style="color:blue;">**그리고 주입을 받을 때도 실제 객체 대신에 프록시 객체가 주입된다**</mark>.
+* 클래스 이름을 출력해보면 <mark style="color:blue;">`basicService$$EnhancerBySpringCGLIB...`</mark>라고 프록시 클래스의 이름이 출력되는 것을 확인할 수 있다.
+
+#### proxyCheck() - 실행결과
+
+![](<../../../../.gitbook/assets/image (8).png>)
+
+#### 스프링 컨테이너에 트랜잭션 프록시 등록
+
+![](<../../../../.gitbook/assets/image (15).png>)
+
+* 프록시는 <mark style="color:blue;">`BasicService`</mark>를 상속해서 만들어지기 때문에 다형성을 활용할 수 있다. 따라서 <mark style="color:blue;">`BasicService`</mark> 대신에 프록시인 <mark style="color:blue;">`BasicService$$CGLIB`</mark>를 주입할 수 있다.
+
+#### 트랜잭션 프록시 동작 방식
+
+![](<../../../../.gitbook/assets/image (14).png>)
+
+* 클라이언트가 주입 받은 <mark style="color:blue;">`basicService$$CGLIB`</mark>는 트랜잭션을 적용하는 프록시이다.
+
+#### 테스트 코드 실행
+
+실행하기 전에 먼저 다음 로그를 추가하자
+
+{% code title="application.properties" %}
+```java
+logging.level.org.springframework.transaction.interceptor=TRACE
+```
+{% endcode %}
+
+이 로그를 추가하면 트랜잭션 프록시가 호출하는 트랜잭션의 시작과 종료를 명확하게 로그로 확인할 수 있다.
+
+{% hint style="info" %}
+<mark style="color:blue;">`TransactionSynchronizationManager.isActualTransactionActive()`</mark>\
+현재 스레드에 트랜잭션이 적용되어 있는지 확인할 수 있는 기능이다. 결과가 <mark style="color:blue;">`true`</mark>면 트랜잭션이 적용되어 있는 것이다. 트랜잭션의 적용 여부를 가장 확실하게 확인할 수 있다.
+{% endhint %}
+
+![](<../../../../.gitbook/assets/image (7).png>)
+
+* 로그를 통해 tx() 호출시에는 <mark style="color:blue;">`tx active=true`</mark>를 통해 트랜잭션이 적용된 것을 확인할 수 있다.
+* <mark style="color:blue;">`TransactionInterceptor`</mark> 로그를 통해 트랜잭션 프록시가 트랜잭션을 시작하고 완료한 내용을 확인할 수 있다.
+* <mark style="color:blue;">`noxTx()`</mark> 호출시에는 <mark style="color:blue;">`tx active=false`</mark>를 통해 트랜잭션이 없는 것을 확할 수 있다.
+
+## 트랜잭션 적용 위치
+
+> 생략...
+
+## 트랜잭션 AOP 주의 사항 - 프록시 내부 호출
+
+
+
+<mark style="color:blue;">`@Transactional`</mark>을 사용하면 스프링의 트랜잭션 AOP가 적용된다. 트랜잭션 AOP는 기본적으로 프록시 방식의 AOP를 사용한다. 앞서 배운 것 처럼 <mark style="color:blue;">`@Transactional`</mark>을 적용하면 프록시 객체가 요청을 먼저 받아서 트랜잭션을 처리하고, 실제 객체를 호출해준다. <mark style="color:blue;">**따라서 트랜잭션을 적용하려면 항상 프록시를 통해서 대상 객체(Target)을 호출해야 한다.**</mark> 이렇게 해야 프록시에 먼저 트랜잭션을 적용하고, 이후에 대상 객체를 호출하게 된다.
+
+![](<../../../../.gitbook/assets/image (13).png>)
+
+AOP를 적용하면 스프링은 대상 객체 대신에 프록시를 스프링 빈으로 등록한다. 따라서 스프링은 의존관계 주입시에 항상 실제 객체 대신에 프록시 객체를 주입한다. 프록시 객체가 주입되기 때문에 대상 객체를 직접 호출하는 문제는 일반적으로 발생하지 않는다. <mark style="color:blue;">**하지만 대상 객체의 내부에서 메서드 호출이 발생하면 프록시를 거치지 않고 대상 객체를 직접 호출하는 문제가 발생한다. 이렇게 되면**</mark><mark style="color:blue;">** **</mark><mark style="color:blue;">**`@Transactional`**</mark><mark style="color:blue;">**이 있어도 트랜잭션이 적용되지 않는다.**</mark> 실무에서 반드시 한번은 만나서 고생하는 문제이기 때문에 꼭 이해하고 넘어가자.
+
+예제를 통해서 내부 호출이 발생할 때 어떤 문제가 발생하는지 알아보자. 먼저 내부 호출이 발생하는 예제를 만들어보자.
+
+{% embed url="https://gist.github.com/301e1915e86cde516e0033410295bfb1" %}
+
+### internalCall() - 실행 결과
+
+![](<../../../../.gitbook/assets/image (11).png>)
+
+![](<../../../../.gitbook/assets/image (13).png>)
+
+### externalCall() - 실행 결과
+
+![](<../../../../.gitbook/assets/image (10).png>)
+
+![](<../../../../.gitbook/assets/image (6).png>)
+
+### 프록시 방식의 AOP 한계
+
+<mark style="color:blue;">`@Transactional`</mark> 를 사용하는 트랜잭션 AOP는 프록시를 사용한다. 프록시를 사용하면 메서드 내부 호출에 프록시를 적용할 수 없다.
+
+그렇다면 이 문제를 어떻게 해결할 수 있을까?\
+가장 단순한 방법은 내부 호출을 피하기 위해 <mark style="color:blue;">`internal()`</mark> 메서드를 별도의 클래스로 분리하는 것이다.
+
+## 트랜잭션 AOP 주의사항 - 초기화 시점
+
+스프링 초기화 시점에는 트랜잭션 AOP가 적용되지 않을 수 있다.
+
+{% embed url="https://gist.github.com/e13d98aafe8ad4315e6aff004eee6d55" %}
+
+#### initV1() - @PostContruct
+
+![](<../../../../.gitbook/assets/image (5).png>)
+
+가장 확실한 대안은 <mark style="color:blue;">`ApplicationReadyEvent`</mark> 이벤트를 사용하는 것이다.
+
+#### initV2() - EventListener(value = ApplicationReadyEvent.class)
+
+<mark style="color:blue;">`ApplicationReadyEvent`</mark> 이벤트는 트랜잭션 AOP를 포함한 스프링이 컨테이너가 완전히 생성되고 난 다음에 이벤트가 붙은 메서드를 호출해준다. 따라서 <mark style="color:blue;">`init2()`</mark> 는 트랜잭션이 적용된 것을 확인할 수 있다.
+
+![](<../../../../.gitbook/assets/스크린샷 2022-07-24 오후 9.37.48 (1).png>)
+
+## 트랜잭션 옵션 소
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
