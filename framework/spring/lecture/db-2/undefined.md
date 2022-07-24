@@ -71,7 +71,7 @@ public interface PlatformTransactionManager extends TransactionManager {
 
 * 트랜잭션은 트랜잭션 시작(획득), 커밋, 롤백으로 단순하게 추상화할 수 있다.
 
-![](../../../../.gitbook/assets/image.png)
+![](<../../../../.gitbook/assets/image (6).png>)
 
 * <mark style="color:blue;">**스링은 트랜잭션을 추상화해서 제공할 뿐만 아니라**</mark>, 실무에서 주로 사용하는 데이터 접근 기술에 대한 <mark style="color:blue;">**트랜잭션 매니저의 구현체도 제공**</mark>한다.&#x20;
 * 여기에 더해서 스프링 부트는 어떤 데이터 접근 기술을 사용하는지 자동으로 인식해서 적절한 트랜잭션 매니저를 선택해서 스프링 빈으로 등록해주기 때문에 트랜잭션 매니저를 선택하고 등록하는 과정도 생략할 수 있다.\
@@ -105,5 +105,64 @@ public interface PlatformTransactionManager extends TransactionManager {
 
 #### 프록시 도입 전
 
+![](<../../../../.gitbook/assets/image (3).png>)
 
+트랜잭션을 처리하기 위한 프록시를 도입하기 전에는 서비스의 로직에서 트랜잭션을 직접 시작했다.
+
+#### 서비스 계층의 트랜잭션 사용 코드 예
+
+![](<../../../../.gitbook/assets/image (5).png>)
+
+#### 프록시 도입 후
+
+![](<../../../../.gitbook/assets/image (4).png>)
+
+트랜잭션을 처리하기 위한 **프록시를 적용하면 트랜잭션을 처리하는 객체와 비즈니스 로직을 처리하는 서비스 객체를 명확하게 분리할 수 있다.**
+
+#### 트랜잭션 프록시 코드 예시
+
+![](../../../../.gitbook/assets/image.png)
+
+#### 트랜잭션 프록시 적용 후 서비스 코드 예시
+
+![](<../../../../.gitbook/assets/image (7).png>)
+
+* 프록시 도입 전: 서비스에 비즈니스 로직과 트랜잭션 처리 로직이 함께 섞여있다.
+* 프록시 도입 후: <mark style="color:blue;">**트랜잭션 프록시가 트랜잭션 처리 로직을 모두 가져간다. 그리고 트랜잭션을 시작한 후에 실제 서비스를 대신 호출한다.**</mark> 트랜잭션 프록시 덕분에 서비스 계층에는 순수한 비즈니스 로직만 남길 수 있다.
+
+### 프록시 도입 후 전체 과정
+
+![](<../../../../.gitbook/assets/image (1).png>)
+
+* 트랜잭션은 커넥션에 <mark style="color:blue;">`con.setAutocommit(false)`</mark>를 지정하면서 시작한다.
+* 같은 트랜잭션을 유지하려면 같은 데이터베이스 커넥션을 사용해야 한다.
+* 이것을 위해 스프핑 내부에서는 <mark style="color:blue;">**트랜잭션 동기화 매니저**</mark>가 사용된다.
+* <mark style="color:blue;">`JdbcTemplate`</mark>을 포함한 대부분의 데이터 접근 기술들 트랜잭션을 유지하기 위해 내부에서 트랜잭션 동기화 매니저를 통해 리소스(커넥션)을 동기화 한다.
+
+### 스프링이 제공하는 트랜잭션 AOP
+
+* 스프링의 트랜잭션은 매우 중요한 기능이고, 전세계 누구나 다 사용하는 기능이다. 스프링은 트랜잭션 AOP를 처리하기 위한 모든 기능을 제공한다. **스프링 부트를 사용하면 트랜잭션 AOP를 처리하기 위해 필요한 스프링 빈들도 자동으로 등록해준다.**
+* 개발자는 트랜잭션 처리가 필요한 곳에 <mark style="color:blue;">`@Transactional`</mark> 애노테이션만 붙여주면 된다. 스프링의 트랜잭션 AOP는 이 애노테이션을 인식해서 트랜잭션을 처리하는 프록시를 적용해준다.
+
+```java
+org.springframework.transaction.annotation.Transactional
+```
+
+## 트랜잭션 적용 확인
+
+<mark style="color:blue;">`@Transactional`</mark>을 통해 선언적 트랜잭션 방식을 사용하면 단순히 애노테이션 하나로 트랜잭션을 적용할 수 있다. **그런데 이 기능은 트랜잭션 관련 코드가 눈에 보이지 않고, AOP를 기반으로 동작하기 때문에, 실제 트랜잭션이 적용되고 있는지 아닌지를 확인하기가 어렵다.**
+
+스프링 트랜잭션이 실제 적용되고 있는지 확인하는 방법을 알아보자.
+
+<details>
+
+<summary>TxApplyBasicTest</summary>
+
+
+
+</details>
+
+####
+
+{% embed url="https://gist.github.com/9d9ced16d4cd9b4cf19178c8a3d50321" %}
 
