@@ -12,7 +12,7 @@ String name = null;
 
 * 둘 다 데이터를 저장한다는 점은 같음
 * 하지만 프로퍼티에는 더 많은 기능이 있음
-  * 겟터, 셋터
+  * 게터, 터
 
 ```kotlin
 var name: String = null
