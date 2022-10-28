@@ -115,5 +115,6 @@
 
 * [AWS](infra/aws/README.md)
   * [S3](infra/aws/s3/README.md)
-    * [정책 및 권한](infra/aws/s3/undefined/README.md)
-      * [버킷 정책](infra/aws/s3/undefined/undefined.md)
+    * [버킷](infra/aws/s3/undefined.md)
+    * [정책 및 권한](infra/aws/s3/undefined-1/README.md)
+      * [버킷 정책](infra/aws/s3/undefined-1/undefined.md)
