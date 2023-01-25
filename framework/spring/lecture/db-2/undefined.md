@@ -105,7 +105,7 @@ public interface PlatformTransactionManager extends TransactionManager {
 
 #### 프록시 도입 전
 
-![](<../../../../.gitbook/assets/image (3).png>)
+![](<../../../../.gitbook/assets/image (3) (1).png>)
 
 트랜잭션을 처리하기 위한 프록시를 도입하기 전에는 서비스의 로직에서 트랜잭션을 직접 시작했다.
 
@@ -132,7 +132,7 @@ public interface PlatformTransactionManager extends TransactionManager {
 
 ### 프록시 도입 후 전체 과정
 
-![](<../../../../.gitbook/assets/image (1).png>)
+![](<../../../../.gitbook/assets/image (1) (1).png>)
 
 * 트랜잭션은 커넥션에 <mark style="color:blue;">`con.setAutocommit(false)`</mark>를 지정하면서 시작한다.
 * 같은 트랜잭션을 유지하려면 같은 데이터베이스 커넥션을 사용해야 한다.
@@ -212,7 +212,7 @@ logging.level.org.springframework.transaction.interceptor=TRACE
 
 <mark style="color:blue;">`@Transactional`</mark>을 사용하면 스프링의 트랜잭션 AOP가 적용된다. 트랜잭션 AOP는 기본적으로 프록시 방식의 AOP를 사용한다. 앞서 배운 것 처럼 <mark style="color:blue;">`@Transactional`</mark>을 적용하면 프록시 객체가 요청을 먼저 받아서 트랜잭션을 처리하고, 실제 객체를 호출해준다. <mark style="color:blue;">**따라서 트랜잭션을 적용하려면 항상 프록시를 통해서 대상 객체(Target)을 호출해야 한다.**</mark> 이렇게 해야 프록시에 먼저 트랜잭션을 적용하고, 이후에 대상 객체를 호출하게 된다.
 
-![](<../../../../.gitbook/assets/image (13).png>)
+![](<../../../../.gitbook/assets/image (13) (1).png>)
 
 AOP를 적용하면 스프링은 대상 객체 대신에 프록시를 스프링 빈으로 등록한다. 따라서 스프링은 의존관계 주입시에 항상 실제 객체 대신에 프록시 객체를 주입한다. 프록시 객체가 주입되기 때문에 대상 객체를 직접 호출하는 문제는 일반적으로 발생하지 않는다. <mark style="color:blue;">**하지만 대상 객체의 내부에서 메서드 호출이 발생하면 프록시를 거치지 않고 대상 객체를 직접 호출하는 문제가 발생한다. 이렇게 되면**</mark><mark style="color:blue;">** **</mark><mark style="color:blue;">**`@Transactional`**</mark><mark style="color:blue;">**이 있어도 트랜잭션이 적용되지 않는다.**</mark> 실무에서 반드시 한번은 만나서 고생하는 문제이기 때문에 꼭 이해하고 넘어가자.
 
@@ -224,7 +224,7 @@ AOP를 적용하면 스프링은 대상 객체 대신에 프록시를 스프링 
 
 ![](<../../../../.gitbook/assets/image (11).png>)
 
-![](<../../../../.gitbook/assets/image (13).png>)
+![](<../../../../.gitbook/assets/image (13) (1).png>)
 
 ### externalCall() - 실행 결과
 

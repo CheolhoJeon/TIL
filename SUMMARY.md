@@ -18,6 +18,9 @@
 
 ## DATABASE
 
+* [MySQL](database/mysql/README.md)
+  * [Real MySQL 8.0](database/mysql/real-mysql-8.0/README.md)
+    * [4. 아키텍처](database/mysql/real-mysql-8.0/4..md)
 * [Concepts](database/concepts/README.md)
   * [회복과 병행 제어](database/concepts/undefined/README.md)
     * [트랜잭션](database/concepts/undefined/undefined.md)
